@@ -10,19 +10,24 @@ import ReactFlow, {
   NodeMouseHandler,
   Node,
   MarkerType,
+  Edge,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import LibraryPanel from '@/components/libraryPanel';
 import { CODE_BUILDER, CUSTOM_X_FORCE_NODES, XForceNodesEnum, X_FORCE_NODES, extractNodeName } from './nodes/nodeTypes';
 import { includes } from 'lodash';
-import ContextMenu, { CtxMenuType } from './ContextMenu';
+import ContextMenu from './ContextMenu/Node';
+import { CtxMenuType } from './ContextMenu/types';
+import NodeContextMenu from './ContextMenu/Node';
+import EdgeContextMenu from './ContextMenu/Edge';
 
 const AppX = () => {
   const reactFlowWrapper = React.useRef(null);
   const reactFlowRef = React.useRef<HTMLDivElement | null>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [menu, setMenu] = React.useState<CtxMenuType | null>(null);
+  const [nodeCtxMenu, setNodeCtxMenu] = React.useState<CtxMenuType | null>(null);
+  const [edgeCtxMenu, setEdgeCtxMenu] = React.useState<CtxMenuType | null>(null);
   const [reactFlowInstance, setReactFlowInstance] = React.useState<ReactFlowInstance>();
 
   const onConnect = React.useCallback(
@@ -72,22 +77,42 @@ const AppX = () => {
 
   const onNodeCtxMenu = React.useCallback(
     (event: React.MouseEvent, node: Node) => {
+      setEdgeCtxMenu(null);
       event.preventDefault();
       const pane = reactFlowRef?.current?.getBoundingClientRect?.();
-      console.log(pane);
       if (pane) {
-        setMenu({
+        setNodeCtxMenu({
           id: node.id,
-          top: event.clientY < pane.height - 200 ? event.clientY : undefined,
-          left: event.clientX < pane.width - 200 ? event.clientX : undefined,
-          right: event.clientX >= pane.width - 200 ? pane.width - event.clientX : undefined,
-          bottom: event.clientY >= pane.height - 200 ? pane.height - event.clientY : undefined,
+          top: event.clientY < pane.height ? event.clientY : undefined,
+          left: event.clientX < pane.width ? event.clientX - 200 : undefined, // TODO: -200 should be: - LibraryPanel width
+          right: event.clientX >= pane.width ? pane.width - event.clientX : undefined,
+          bottom: event.clientY >= pane.height ? pane.height - event.clientY : undefined,
         });
       }
     },
-    [setMenu],
+    [setNodeCtxMenu],
   );
-  const onPaneClick = React.useCallback(() => setMenu(null), [setMenu]);
+  const onEdgeCtxMenu = React.useCallback(
+    (event: React.MouseEvent, node: Edge) => {
+      setNodeCtxMenu(null);
+      event.preventDefault();
+      const pane = reactFlowRef?.current?.getBoundingClientRect?.();
+      if (pane) {
+        setEdgeCtxMenu({
+          id: node.id,
+          top: event.clientY < pane.height ? event.clientY : undefined,
+          left: event.clientX < pane.width ? event.clientX - 200 : undefined, // TODO: -200 should be: - LibraryPanel width
+          right: event.clientX >= pane.width ? pane.width - event.clientX : undefined,
+          bottom: event.clientY >= pane.height ? pane.height - event.clientY : undefined,
+        });
+      }
+    },
+    [setEdgeCtxMenu],
+  );
+  const onPaneClick = React.useCallback(() => {
+    setNodeCtxMenu(null);
+    setEdgeCtxMenu(null);
+  }, []);
 
   return (
     <div className="flex h-full">
@@ -108,11 +133,13 @@ const AppX = () => {
           onDragOver={onDragOver}
           onPaneClick={onPaneClick}
           onNodeContextMenu={onNodeCtxMenu}
+          onEdgeContextMenu={onEdgeCtxMenu}
           isValidConnection={isValidConnection}
         >
           <Controls />
           <Background />
-          {menu && <ContextMenu onClick={onPaneClick} menu={menu} />}
+          {nodeCtxMenu && <NodeContextMenu onClick={onPaneClick} menu={nodeCtxMenu} />}
+          {edgeCtxMenu && <EdgeContextMenu onClick={onPaneClick} menu={edgeCtxMenu} />}
         </ReactFlow>
       </div>
     </div>

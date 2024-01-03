@@ -1,19 +1,8 @@
 import React from 'react';
 import { useReactFlow } from 'reactflow';
+import { ContextMenuArgsType } from './types';
 
-export type CtxMenuType = {
-  id: string;
-  top?: number;
-  left?: number;
-  right?: number;
-  bottom?: number;
-};
-
-type ContextMenuArgsType = {
-  menu: CtxMenuType;
-} & React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
-
-const ContextMenu: React.FC<ContextMenuArgsType> = (props) => {
+const NodeContextMenu: React.FC<ContextMenuArgsType> = (props) => {
   const { id, top, left, right, bottom } = props.menu;
   const { setNodes, setEdges } = useReactFlow();
 
@@ -32,10 +21,10 @@ const ContextMenu: React.FC<ContextMenuArgsType> = (props) => {
         onClick={deleteNode}
         className="px-4 w-full text-start rounded-md border border-gray-100 hover:bg-blue-400 hover:text-white"
       >
-        Delete the Node
+        Remove Node
       </button>
     </div>
   );
 };
 
-export default ContextMenu;
+export default NodeContextMenu;
