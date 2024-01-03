@@ -15,11 +15,14 @@ import 'reactflow/dist/style.css';
 import LibraryPanel from '@/components/libraryPanel';
 import { CODE_BUILDER, CUSTOM_X_FORCE_NODES, XForceNodesEnum, X_FORCE_NODES, extractNodeName } from './nodes/nodeTypes';
 import { includes } from 'lodash';
+import ContextMenu, { CtxMenuType } from './ContextMenu';
 
 const AppX = () => {
   const reactFlowWrapper = React.useRef(null);
+  const reactFlowRef = React.useRef<HTMLDivElement | null>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [menu, setMenu] = React.useState<CtxMenuType | null>(null);
   const [reactFlowInstance, setReactFlowInstance] = React.useState<ReactFlowInstance>();
 
   const onConnect = React.useCallback(
@@ -67,12 +70,32 @@ const AppX = () => {
     console.log(CODE_BUILDER(nodes, edges));
   };
 
+  const onNodeCtxMenu = React.useCallback(
+    (event: React.MouseEvent, node: Node) => {
+      event.preventDefault();
+      const pane = reactFlowRef?.current?.getBoundingClientRect?.();
+      console.log(pane);
+      if (pane) {
+        setMenu({
+          id: node.id,
+          top: event.clientY < pane.height - 200 ? event.clientY : undefined,
+          left: event.clientX < pane.width - 200 ? event.clientX : undefined,
+          right: event.clientX >= pane.width - 200 ? pane.width - event.clientX : undefined,
+          bottom: event.clientY >= pane.height - 200 ? pane.height - event.clientY : undefined,
+        });
+      }
+    },
+    [setMenu],
+  );
+  const onPaneClick = React.useCallback(() => setMenu(null), [setMenu]);
+
   return (
     <div className="flex h-full">
       <LibraryPanel />
       <div onClick={getNodes}>Extract Code</div>
       <div className="flex-grow" ref={reactFlowWrapper}>
         <ReactFlow
+          ref={reactFlowRef}
           nodes={nodes}
           edges={edges}
           nodeTypes={CUSTOM_X_FORCE_NODES}
@@ -83,10 +106,13 @@ const AppX = () => {
           onInit={setReactFlowInstance}
           onDrop={onDrop}
           onDragOver={onDragOver}
+          onPaneClick={onPaneClick}
+          onNodeContextMenu={onNodeCtxMenu}
           isValidConnection={isValidConnection}
         >
           <Controls />
           <Background />
+          {menu && <ContextMenu onClick={onPaneClick} menu={menu} />}
         </ReactFlow>
       </div>
     </div>
