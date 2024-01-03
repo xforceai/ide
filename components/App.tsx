@@ -9,17 +9,12 @@ import ReactFlow, {
   ReactFlowInstance,
   NodeMouseHandler,
   Node,
-  useOnSelectionChange,
+  MarkerType,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-
-import TopBar from '@/components/topBar';
 import LibraryPanel from '@/components/libraryPanel';
-import InspectorPanel from '@/components/inspectorPanel';
-
-
-let id = 0;
-const getId = () => `dndnode_${id++}`;
+import { CODE_BUILDER, CUSTOM_X_FORCE_NODES, XForceNodesEnum, X_FORCE_NODES, extractNodeName } from './nodes/nodeTypes';
+import { includes } from 'lodash';
 
 const AppX = () => {
   const reactFlowWrapper = React.useRef(null);
@@ -27,7 +22,10 @@ const AppX = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = React.useState<ReactFlowInstance>();
 
-  const onConnect = React.useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+  const onConnect = React.useCallback(
+    (params: Connection) => setEdges((eds) => addEdge({ ...params, markerEnd: { type: MarkerType.ArrowClosed } }, eds)),
+    [setEdges],
+  );
   const onDragOver: React.DragEventHandler<HTMLDivElement> = React.useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
       event.preventDefault();
@@ -38,8 +36,8 @@ const AppX = () => {
   const onDrop: React.DragEventHandler<HTMLDivElement> = React.useCallback(
     (event) => {
       event.preventDefault();
-      const type = event.dataTransfer.getData('application/reactflow');
-      if (typeof type === 'undefined' || !type) {
+      const node = JSON.parse(event.dataTransfer.getData('application/reactflow'));
+      if (typeof node === 'undefined' || !node) {
         return;
       }
       // @ts-ignore
@@ -47,34 +45,37 @@ const AppX = () => {
         x: event.clientX,
         y: event.clientY,
       });
-      const newNode = {
-        id: getId(),
-        type,
-        position,
-        data: { label: `${type}` },
-      };
-      setNodes((nds) => nds.concat(newNode));
+      node['position'] = position;
+      setNodes((nds) => nds.concat(node));
     },
     [reactFlowInstance, setNodes],
   );
-
   const onNodeClick: NodeMouseHandler = (event: React.MouseEvent, node: Node) => {
     // send node id to configure panel.
   };
 
-  useOnSelectionChange({
-    onChange: ({ nodes, edges }) => {
-      console.log(nodes);
-    },
-  });
+  const isValidConnection = (connection: Connection): boolean => {
+    const sourceKey = extractNodeName(connection.source || '');
+    const targetKey = extractNodeName(connection.target || '');
+    const targetObj =
+      targetKey && targetKey in XForceNodesEnum ? X_FORCE_NODES[targetKey as keyof typeof XForceNodesEnum] : null;
+    if (!targetObj) return false;
+    return includes(targetObj.data.connectivity.input, sourceKey);
+  };
+
+  const getNodes = () => {
+    console.log(CODE_BUILDER(nodes, edges));
+  };
+
   return (
-    <div className='flex bg-red-50 h-full'>
+    <div className="flex h-full">
       <LibraryPanel />
+      <div onClick={getNodes}>Extract Code</div>
       <div className="flex-grow" ref={reactFlowWrapper}>
-      <TopBar />
         <ReactFlow
           nodes={nodes}
           edges={edges}
+          nodeTypes={CUSTOM_X_FORCE_NODES}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onNodeClick={onNodeClick}
@@ -82,13 +83,13 @@ const AppX = () => {
           onInit={setReactFlowInstance}
           onDrop={onDrop}
           onDragOver={onDragOver}
+          isValidConnection={isValidConnection}
         >
           <Controls />
-          <Background />  
+          <Background />
         </ReactFlow>
-        </div>
-        <InspectorPanel />
-        </div>
+      </div>
+    </div>
   );
 };
 
