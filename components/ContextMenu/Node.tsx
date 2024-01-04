@@ -14,14 +14,11 @@ const NodeContextMenu: React.FC<ContextMenuArgsType> = (props) => {
   return (
     <div
       style={{ top, left, right, bottom }}
-      className="absolute z-10 bg-gray-100 border border-gray-300 rounded-md w-56"
+      className="absolute z-10 bg-gray-100 border-2 border-gray-300 rounded-[4px]"
       {...props}
     >
-      <button
-        onClick={deleteNode}
-        className="px-4 w-full text-start rounded-md border border-gray-100 hover:bg-blue-400 hover:text-white"
-      >
-        Remove Node
+      <button onClick={deleteNode} className="px-2 py-1 text-start rounded-[3px] hover:bg-sky-400 hover:text-white">
+        Remove
       </button>
     </div>
   );

@@ -16,7 +16,6 @@ import 'reactflow/dist/style.css';
 import LibraryPanel from '@/components/libraryPanel';
 import { CODE_BUILDER, CUSTOM_X_FORCE_NODES, XForceNodesEnum, X_FORCE_NODES, extractNodeName } from './nodes/nodeTypes';
 import { includes } from 'lodash';
-import ContextMenu from './ContextMenu/Node';
 import { CtxMenuType } from './ContextMenu/types';
 import NodeContextMenu from './ContextMenu/Node';
 import EdgeContextMenu from './ContextMenu/Edge';
