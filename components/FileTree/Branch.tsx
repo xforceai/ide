@@ -23,8 +23,8 @@ function Branch<T>({ item, level }: BranchProps<T>): React.JSX.Element {
   };
 
   return (
-    <div className="pl-4">
-      <Node item={item} onExpand={onExpand} />
+    <div className="pl-4 pt-4">
+      <Node item={item} onExpand={onExpand} isExpanded={expanded} />
       {expanded && renderSubBranches()}
     </div>
   );

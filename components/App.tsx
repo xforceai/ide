@@ -13,12 +13,13 @@ import ReactFlow, {
   Edge,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import LibraryPanel from '@/components/libraryPanel';
 import { CODE_BUILDER, CUSTOM_X_FORCE_NODES, XForceNodesEnum, X_FORCE_NODES, extractNodeName } from './nodes/nodeTypes';
 import { includes } from 'lodash';
 import { CtxMenuType } from './ContextMenu/types';
 import NodeContextMenu from './ContextMenu/Node';
 import EdgeContextMenu from './ContextMenu/Edge';
+import LibraryPanel from './UI/LibraryPanel/Panel';
+import TopBar from './UI/TopBar';
 
 const AppX = () => {
   const reactFlowWrapper = React.useRef(null);
@@ -116,8 +117,8 @@ const AppX = () => {
   return (
     <div className="flex h-full">
       <LibraryPanel />
-      <div onClick={getNodes}>Extract Code</div>
       <div className="flex-grow" ref={reactFlowWrapper}>
+        <TopBar />
         <ReactFlow
           ref={reactFlowRef}
           nodes={nodes}
