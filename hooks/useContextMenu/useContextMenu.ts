@@ -1,16 +1,17 @@
 import React from 'react';
 import { ContextMenuHookReturnType } from '@/hooks/useContextMenu';
+import { ContextMenuModalType } from './types';
 
 export const useContextMenu = (): ContextMenuHookReturnType => {
-  const [clicked, setClicked] = React.useState(false);
+  const [ctxMenuModal, setCtxMenuModal] = React.useState<ContextMenuModalType[] | null>(null);
   const [points, setPoints] = React.useState({
     x: 0,
     y: 0,
   });
 
   return {
-    clicked,
-    setClicked,
+    ctxMenuModal,
+    setCtxMenuModal,
     points,
     setPoints,
   };

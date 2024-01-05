@@ -1,33 +1,25 @@
 import React from 'react';
 import {
   Connection,
-  Edge,
   MarkerType,
-  Node,
-  OnConnect,
-  OnEdgesChange,
-  OnNodesChange,
   ReactFlowInstance,
+  ReactFlowProps,
   addEdge,
   useEdgesState,
   useNodesState,
+  Node as ReactFlowNode,
+  Edge as ReactFlowEdge,
 } from 'reactflow';
 import { includes } from 'lodash';
 import { XForceNodesEnum, X_FORCE_NODES, extractNodeName } from '@/components/nodes/nodeTypes';
+import { ContextMenuContext } from '@/contexts/ContextMenuContext';
 
-type ReturnType = {
+type ReturnType = ReactFlowProps & {
   reactFlowRef: React.MutableRefObject<HTMLDivElement | null>;
-  nodes: Node<any, string | undefined>[];
-  onNodesChange: OnNodesChange;
-  edges: Edge<any>[];
-  onEdgesChange: OnEdgesChange;
-  onDropNode: React.DragEventHandler<HTMLDivElement>;
-  onDragOver: React.DragEventHandler<HTMLDivElement>;
-  onConnect: OnConnect;
-  isValidConnection: (connection: Connection) => boolean;
-  setReactFlowInstance: React.Dispatch<React.SetStateAction<ReactFlowInstance | undefined>>;
 };
+
 function useXForceReactFlow(): ReturnType {
+  const { setCtxMenuModal, setPoints } = React.useContext(ContextMenuContext);
   const reactFlowRef = React.useRef<HTMLDivElement | null>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -42,15 +34,14 @@ function useXForceReactFlow(): ReturnType {
     return includes(targetObj.data.connectivity.input, sourceKey);
   };
 
-  const onDropNode: React.DragEventHandler<HTMLDivElement> = React.useCallback(
+  const onDrop: React.DragEventHandler<HTMLDivElement> = React.useCallback(
     (event) => {
       event.preventDefault();
       const node = JSON.parse(event.dataTransfer.getData('application/reactflow'));
       if (typeof node === 'undefined' || !node) {
         return;
       }
-      // @ts-ignore
-      const position = reactFlowInstance.screenToFlowPosition({
+      const position = reactFlowInstance?.screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
@@ -73,17 +64,62 @@ function useXForceReactFlow(): ReturnType {
     [setEdges],
   );
 
+  const onInit = (rf: ReactFlowInstance) => setReactFlowInstance(rf);
+
+  const onDeleteNode = React.useCallback(
+    (node: ReactFlowNode) => {
+      setNodes((nodes) => nodes.filter((n) => n.id !== node.id));
+      setEdges((edges) => edges.filter((e) => e.source !== node.id));
+    },
+    [setNodes, setEdges],
+  );
+
+  const onDeleteEdge = React.useCallback(
+    (edge: ReactFlowEdge) => {
+      setEdges((edges) => edges.filter((e) => e.id !== edge.id));
+    },
+    [setEdges],
+  );
+
+  const onNodeContextMenu = React.useCallback(
+    (event: React.MouseEvent, node: ReactFlowNode) => {
+      setPoints({ x: event.pageX, y: event.pageY });
+      setCtxMenuModal([
+        {
+          name: 'Delete Node',
+          onClick: () => onDeleteNode(node),
+        },
+      ]);
+    },
+    [onDeleteNode, setCtxMenuModal, setPoints],
+  );
+
+  const onEdgeContextMenu = React.useCallback(
+    (event: React.MouseEvent, edge: ReactFlowEdge) => {
+      setPoints({ x: event.pageX, y: event.pageY });
+      setCtxMenuModal([
+        {
+          name: 'Delete Edge',
+          onClick: () => onDeleteEdge(edge),
+        },
+      ]);
+    },
+    [onDeleteEdge, setCtxMenuModal, setPoints],
+  );
+
   return {
     reactFlowRef,
     nodes,
     onNodesChange,
     edges,
     onEdgesChange,
-    onDropNode,
+    onDrop,
     isValidConnection,
     onDragOver,
     onConnect,
-    setReactFlowInstance,
+    onInit,
+    onNodeContextMenu,
+    onEdgeContextMenu,
   };
 }
 

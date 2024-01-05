@@ -5,11 +5,10 @@ import { CUSTOM_X_FORCE_NODES } from './nodes/nodeTypes';
 import LibraryPanel from './UI/LibraryPanel/Panel';
 import TopBar from './UI/TopBar';
 import useXForceReactFlow from '@/hooks/useXForceReactFlow';
-import { useContextMenu } from '@/hooks/useContextMenu';
 import { ContextMenuContext } from '@/contexts/ContextMenuContext';
 
 const AppX = () => {
-  const { setClicked, setPoints } = React.useContext(ContextMenuContext);
+  const { setCtxMenuModal, setPoints } = React.useContext(ContextMenuContext);
   const {
     reactFlowRef,
     nodes,
@@ -17,21 +16,13 @@ const AppX = () => {
     edges,
     onEdgesChange,
     onConnect,
-    onDropNode,
+    onDrop,
     onDragOver,
     isValidConnection,
-    setReactFlowInstance,
+    onInit,
+    onNodeContextMenu,
+    onEdgeContextMenu,
   } = useXForceReactFlow();
-  const {} = useContextMenu();
-
-  const onNodeCtxMenu = React.useCallback(
-    (event: React.MouseEvent, node: ReactFlowNode) => {
-      setPoints({ x: event.pageX, y: event.pageY });
-      setClicked(true);
-    },
-    [setClicked, setPoints],
-  );
-
   return (
     <div className="flex h-full">
       <LibraryPanel />
@@ -45,11 +36,12 @@ const AppX = () => {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
-          onInit={setReactFlowInstance}
-          onDrop={onDropNode}
+          onInit={onInit}
+          onDrop={onDrop}
           onDragOver={onDragOver}
           isValidConnection={isValidConnection}
-          onNodeContextMenu={onNodeCtxMenu}
+          onNodeContextMenu={onNodeContextMenu}
+          onEdgeContextMenu={onEdgeContextMenu}
         >
           <Controls />
           <Background />

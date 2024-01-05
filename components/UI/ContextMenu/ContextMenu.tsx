@@ -1,13 +1,13 @@
 import { ContextMenuContext } from '@/contexts/ContextMenuContext';
+import { ContextMenuModalType } from '@/hooks/useContextMenu/types';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { MenuItemType, nodeMenu } from './contextMenus';
 
 type Props = React.HTMLProps<HTMLDivElement> & {};
 
 const ContextMenuModal: React.FC<Props> = () => {
   const ref = React.useRef<HTMLDivElement>(null);
-  let { points, clicked, setClicked } = React.useContext(ContextMenuContext);
+  let { points, ctxMenuModal, setCtxMenuModal } = React.useContext(ContextMenuContext);
   const [CONTAINER, SET_CONTAINER] = React.useState<Element | null>(null);
 
   React.useEffect(() => {
@@ -17,21 +17,20 @@ const ContextMenuModal: React.FC<Props> = () => {
 
   React.useEffect(() => {
     const checkIfClickedOutside = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setClicked(false);
-      }
+      // if (ref.current && !ref.current.contains(e.target as Node)) {} // TODO: Probably we don't want this.
+      setCtxMenuModal(null);
     };
     document.addEventListener('click', checkIfClickedOutside);
     return () => {
       document.removeEventListener('click', checkIfClickedOutside);
     };
-  }, [setClicked]);
+  }, [setCtxMenuModal]);
 
-  const renderMenuItems = (items: MenuItemType[]) => {
-    return items.map((item, index) => <ContextMenuBranch key={index} {...item} />);
+  const renderMenuItems = () => {
+    return ctxMenuModal?.map((item, index) => <ContextMenuBranch key={index} {...item} />);
   };
 
-  if (!clicked || !CONTAINER) return null;
+  if (!ctxMenuModal || !CONTAINER) return null;
 
   return ReactDOM.createPortal(
     <div
@@ -39,7 +38,7 @@ const ContextMenuModal: React.FC<Props> = () => {
       style={{ top: points.y, left: points.x }}
       ref={ref}
     >
-      <ul>{renderMenuItems(nodeMenu)}</ul>
+      <ul>{renderMenuItems()}</ul>
     </div>,
     CONTAINER,
   );
@@ -47,7 +46,8 @@ const ContextMenuModal: React.FC<Props> = () => {
 
 export default ContextMenuModal;
 
-const ContextMenuBranch: React.FC<MenuItemType> = ({ item, sub }) => {
+const ContextMenuBranch: React.FC<ContextMenuModalType> = (props) => {
+  const { sub } = props;
   const [isChildVisible, setChildVisible] = React.useState(false);
 
   const renderSubs = () => {
@@ -73,16 +73,20 @@ const ContextMenuBranch: React.FC<MenuItemType> = ({ item, sub }) => {
       onMouseEnter={() => setChildVisible(true)}
       onMouseLeave={() => setChildVisible(false)}
     >
-      <ContextMenuNode item={item} />
+      <ContextMenuNode {...props} />
       {renderSubs()}
     </li>
   );
 };
 
-const ContextMenuNode: React.FC<MenuItemType> = ({ item }) => {
+const ContextMenuNode: React.FC<ContextMenuModalType> = (props) => {
   return (
-    <p className="hover:text-white hover:bg-sky-400 pl-2 pr-12 py-1 text-sm z-30" style={{ borderRadius: 'inherit' }}>
-      {item}
+    <p
+      className="hover:text-white hover:bg-sky-400 pl-2 pr-12 py-1 text-sm z-30"
+      style={{ borderRadius: 'inherit' }}
+      {...props}
+    >
+      {props.name}
     </p>
   );
 };
