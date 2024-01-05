@@ -2,6 +2,7 @@
   "name": "ide.x-force.ai",
   "version": "0.1.0",
   "private": true,
+  "description": "a tool that builds the tools to build the tool.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

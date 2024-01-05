@@ -1,3 +1,4 @@
+import { ContextMenuContext } from '@/contexts/ContextMenuContext';
 import React from 'react';
 
 type MenuItemProps = React.HTMLProps<HTMLDivElement> & {
@@ -15,17 +16,18 @@ const MenuItem: React.FC<MenuItemProps> = (props: MenuItemProps) => {
 };
 
 const TopBar: React.FC = () => {
-  const [ctxMenu, setCtxMenu] = React.useState();
+  const { setClicked, setPoints } = React.useContext(ContextMenuContext);
 
-  const onMouseEnter = () => {
-    setCtxMenu('');
+  const x = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    console.log('clicked');
+    setClicked(true);
+    setPoints({ x: e.pageX, y: e.pageY });
   };
-
   return (
-    <div className={`absolute top-0 w-[calc(100vw-320px)] bg-gray-50 h-11 border-b border-b-gray-200 z-10`}>
+    <div className={`absolute top-0 w-[calc(100vw-320px)] bg-gray-50 h-11 border-b border-b-gray-200 z-10 opacity-95`}>
       <div className="flex h-11 items-center px-4 justify-between">
         <div>
-          <MenuItem name="File" />
+          <MenuItem name="File" onContextMenu={x} />
         </div>
         <div className="flex">
           <MenuItem name="About" />
