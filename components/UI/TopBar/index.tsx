@@ -1,5 +1,7 @@
+import { CODE_BUILDER } from '@/components/nodes/nodeTypes';
 import { ContextMenuContext } from '@/contexts/ContextMenuContext';
 import React from 'react';
+import { useReactFlow } from 'reactflow';
 
 type MenuItemProps = React.HTMLProps<HTMLDivElement> & {
   name: string;
@@ -8,7 +10,7 @@ const MenuItem: React.FC<MenuItemProps> = (props: MenuItemProps) => {
   const { name } = props;
   return (
     <div {...props}>
-      <div className="bg-gray-100 border border-gray-300 rounded skew-x-12 cursor-pointer">
+      <div className="bg-gray-100 border border-gray-300 rounded skew-x-12 cursor-pointer hover:bg-gray-200 hover:border-gray-400">
         <p className="-skew-x-12 pr-8 pl-2 text-gray-700 font-medium text-sm">{name}</p>
       </div>
     </div>
@@ -16,18 +18,23 @@ const MenuItem: React.FC<MenuItemProps> = (props: MenuItemProps) => {
 };
 
 const TopBar: React.FC = () => {
-  const { setClicked, setPoints } = React.useContext(ContextMenuContext);
+  const { setCtxMenuModal, setPoints } = React.useContext(ContextMenuContext);
+  const { getNodes, getEdges } = useReactFlow();
 
-  const x = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    console.log('clicked');
-    setClicked(true);
+  const onClickExportAsPython = () => {
+    console.log(CODE_BUILDER(getNodes(), getEdges()));
+  };
+  const onClickFile = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setCtxMenuModal([{ name: 'Export As', sub: [{ name: 'Python...', onClick: onClickExportAsPython }] }]);
     setPoints({ x: e.pageX, y: e.pageY });
   };
   return (
     <div className={`absolute top-0 w-[calc(100vw-320px)] bg-gray-50 h-11 border-b border-b-gray-200 z-10 opacity-95`}>
       <div className="flex h-11 items-center px-4 justify-between">
         <div>
-          <MenuItem name="File" onContextMenu={x} />
+          <MenuItem name="File" onClick={onClickFile} />
         </div>
         <div className="flex">
           <MenuItem name="About" />

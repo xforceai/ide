@@ -16,13 +16,13 @@ const ContextMenuModal: React.FC<Props> = () => {
   }, []);
 
   React.useEffect(() => {
-    const checkIfClickedOutside = (e: MouseEvent) => {
+    const onClick = () => {
       // if (ref.current && !ref.current.contains(e.target as Node)) {} // TODO: Probably we don't want this.
       setCtxMenuModal(null);
     };
-    document.addEventListener('click', checkIfClickedOutside);
+    document.addEventListener('click', onClick);
     return () => {
-      document.removeEventListener('click', checkIfClickedOutside);
+      document.removeEventListener('click', onClick);
     };
   }, [setCtxMenuModal]);
 
@@ -82,7 +82,7 @@ const ContextMenuBranch: React.FC<ContextMenuModalType> = (props) => {
 const ContextMenuNode: React.FC<ContextMenuModalType> = (props) => {
   return (
     <p
-      className="hover:text-white hover:bg-sky-400 pl-2 pr-12 py-1 text-sm z-30"
+      className="hover:text-white hover:bg-sky-400 pl-2 pr-12 text-gray-700 text-sm z-30"
       style={{ borderRadius: 'inherit' }}
       {...props}
     >

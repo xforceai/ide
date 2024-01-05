@@ -3,6 +3,7 @@ import { Position, Handle, NodeProps as ReactFlowNodeProps, NodeToolbar } from '
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import { XForceNodesEnum } from '../nodeTypes';
 import useNodeHelper from '../helpers/node';
+import { ToolbarSkeleton, ClsHeaderSkeleton, DefaultContent } from '../skeleton';
 
 const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
   const { addData } = useNodeHelper(props);
@@ -48,14 +49,22 @@ const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
           onMouseEnter={() => setToolbarVisible(true)}
           onMouseLeave={() => setToolbarVisible(false)}
         />
-        <NodeToolbar
-          isVisible={toolbarVisible}
-          position={Position.Right}
-          className="-left-9 bg-gray-50 border border-gray-200 rounded-sm"
-        >
-          <button>delete</button>
-          <button>copy</button>
-          <button>expand</button>
+        <NodeToolbar isVisible={toolbarVisible} position={Position.Top}>
+          <ToolbarSkeleton
+            header={<ClsHeaderSkeleton name="GroupChat" />}
+            content={
+              <DefaultContent
+                name="GroupChat"
+                description="is a subclass of ConversableAgent configured with a default system message."
+                docTeaser={`A group chat class that contains the following data fields:
+                agents: a list of participating agents.
+                messages: a list of messages in the group chat.
+                max_round: the maximum number of rounds.
+                admin_name: the name of the admin agent if there is one. Default is "Admin". KeyBoardInterrupt will make the admin agent take over.
+                func_call_filter: whether to enforce function call filter. Default is True. When set to True and when a message is a function call suggestion, the next speaker will be chosen from an agent which contains the corresponding function name in its function_map.`}
+              />
+            }
+          />
         </NodeToolbar>
       </div>
       <div className="p-2 bg-gray-50">
