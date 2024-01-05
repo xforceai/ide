@@ -8,14 +8,6 @@ export const useContextMenu = (): ContextMenuHookReturnType => {
     y: 0,
   });
 
-  React.useEffect(() => {
-    // const handleClick = () => setClicked(false);
-    // document.addEventListener('click', handleClick);
-    // return () => {
-    //   document.removeEventListener('click', handleClick);
-    // };
-  }, []);
-
   return {
     clicked,
     setClicked,

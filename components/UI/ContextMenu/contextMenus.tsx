@@ -12,17 +12,130 @@ const DefaultMenuItem: React.FC<MenuItemProps> = ({ value }: MenuItemProps) => {
 
 export const nodeMenu: MenuItemType[] = [
   {
-    item: <DefaultMenuItem value="Layer 1" />,
+    item: <DefaultMenuItem value="Export" />,
     sub: [
-      { item: <DefaultMenuItem value="Layer 2 - item 1" /> },
       {
-        item: <DefaultMenuItem value="Layer 2 - item 2" />,
+        item: <DefaultMenuItem value="Python Code" />,
+      },
+      {
+        item: <DefaultMenuItem value="Graph" />,
+      },
+      {
+        item: <DefaultMenuItem value="Graph" />,
         sub: [
           {
-            item: <DefaultMenuItem value="Layer 3 - item 1" />,
-            sub: [{ item: <DefaultMenuItem value="Layer 4 - item 1" /> }],
+            item: <DefaultMenuItem value="Graph" />,
+          },
+          {
+            item: <DefaultMenuItem value="Graph" />,
+          },
+          {
+            item: <DefaultMenuItem value="Graph" />,
+            sub: [
+              {
+                item: <DefaultMenuItem value="Graph" />,
+              },
+              {
+                item: <DefaultMenuItem value="Graph" />,
+              },
+              {
+                item: <DefaultMenuItem value="Graph" />,
+              },
+              {
+                item: <DefaultMenuItem value="Graph" />,
+              },
+              {
+                item: <DefaultMenuItem value="Graph" />,
+              },
+            ],
           },
         ],
+      },
+      {
+        item: <DefaultMenuItem value="Graph" />,
+      },
+      {
+        item: <DefaultMenuItem value="Graph" />,
+      },
+      {
+        item: <DefaultMenuItem value="Graph" />,
+        sub: [
+          {
+            item: <DefaultMenuItem value="Graph" />,
+          },
+          {
+            item: <DefaultMenuItem value="Graph" />,
+          },
+          {
+            item: <DefaultMenuItem value="Graph" />,
+          },
+        ],
+      },
+    ],
+  },
+  {
+    item: <DefaultMenuItem value="Export" />,
+    sub: [
+      {
+        item: <DefaultMenuItem value="Python Code" />,
+      },
+      {
+        item: <DefaultMenuItem value="Graph" />,
+      },
+    ],
+  },
+  {
+    item: <DefaultMenuItem value="Export" />,
+    sub: [
+      {
+        item: <DefaultMenuItem value="Python Code" />,
+      },
+      {
+        item: <DefaultMenuItem value="Graph" />,
+      },
+    ],
+  },
+  {
+    item: <DefaultMenuItem value="Export" />,
+    sub: [
+      {
+        item: <DefaultMenuItem value="Python Code" />,
+      },
+      {
+        item: <DefaultMenuItem value="Graph" />,
+      },
+    ],
+  },
+  {
+    item: <DefaultMenuItem value="Export" />,
+    sub: [
+      {
+        item: <DefaultMenuItem value="Python Code" />,
+      },
+      {
+        item: <DefaultMenuItem value="Graph" />,
+      },
+    ],
+  },
+  {
+    item: <DefaultMenuItem value="Export" />,
+    sub: [
+      {
+        item: <DefaultMenuItem value="Python Code" />,
+      },
+      {
+        item: <DefaultMenuItem value="Graph" />,
+      },
+    ],
+  },
+  {
+    item: <DefaultMenuItem value="Export" />,
+    sub: [
+      {
+        item: <DefaultMenuItem value="Python Code" />,
+      },
+      {
+        item: <DefaultMenuItem value="Graph" />,
       },
     ],
   },
