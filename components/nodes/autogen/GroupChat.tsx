@@ -101,7 +101,7 @@ const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
           </select>
         </div>
       </div>
-      <Handle type="target" position={Position.Top} className="rounded-none border-none w-16 h-1 bg-gray-400" />
+      <Handle type="target" position={Position.Top} className="rounded-none border-none w-16 h-1" />
     </div>
   );
 };

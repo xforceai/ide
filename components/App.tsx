@@ -1,14 +1,12 @@
 import React from 'react';
-import ReactFlow, { Controls, Background, Node as ReactFlowNode } from 'reactflow';
+import ReactFlow, { Controls, Background } from 'reactflow';
 
 import { CUSTOM_X_FORCE_NODES } from './nodes/nodeTypes';
 import LibraryPanel from './UI/LibraryPanel/Panel';
 import TopBar from './UI/TopBar';
 import useXForceReactFlow from '@/hooks/useXForceReactFlow';
-import { ContextMenuContext } from '@/contexts/ContextMenuContext';
 
 const AppX = () => {
-  const { setCtxMenuModal, setPoints } = React.useContext(ContextMenuContext);
   const {
     reactFlowRef,
     nodes,
@@ -23,12 +21,20 @@ const AppX = () => {
     onNodeContextMenu,
     onEdgeContextMenu,
     onMove,
+    onSaveGraph,
+    restoreGraph,
   } = useXForceReactFlow();
+
+  React.useEffect(() => {
+    restoreGraph();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <div className="flex h-full">
       <LibraryPanel />
       <div className="flex-grow">
-        <TopBar />
+        <TopBar onSaveGraph={onSaveGraph} />
         <ReactFlow
           ref={reactFlowRef}
           nodes={nodes}
@@ -44,6 +50,8 @@ const AppX = () => {
           onNodeContextMenu={onNodeContextMenu}
           onEdgeContextMenu={onEdgeContextMenu}
           onMove={onMove}
+          className="XForceIDE"
+          attributionPosition="bottom-left"
         >
           <Controls />
           <Background />

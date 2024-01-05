@@ -18,6 +18,8 @@ const Panel = () => {
     {
       id: 'n1',
       name: 'Agents',
+      initiallyExpanded: true,
+      draggable: false,
       children: [
         {
           id: 'n1',
@@ -104,6 +106,13 @@ const Panel = () => {
         <p className="uppercase font-bold">Library</p>
         <Tree data={treeData} />
       </div>
+      {process.env.NEXT_PUBLIC_VERSION_NUMBER && (
+        <span
+          className={`absolute bottom-0 bg-gray-200 w-80 border-t border-t-gray-300 text-sm px-4 py-1 cursor-pointer`}
+        >
+          {process.env.NEXT_PUBLIC_VERSION_NUMBER}
+        </span>
+      )}
     </div>
   );
 };

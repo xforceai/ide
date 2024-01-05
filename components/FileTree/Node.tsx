@@ -12,7 +12,11 @@ function Node<T>(props: NodeProps<T>): React.JSX.Element {
   const hasComponent = props.item.jsxElement ? true : false;
 
   return (
-    <div onClick={props.item.children?.length ? props.onExpand : undefined} draggable onDragStart={props.item.onDrag}>
+    <div
+      onClick={props.item.children?.length ? props.onExpand : undefined}
+      draggable={props.item.draggable ?? true}
+      onDragStart={props.item.onDrag}
+    >
       {hasComponent ? (
         props.item.jsxElement
       ) : (

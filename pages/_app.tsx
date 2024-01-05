@@ -3,6 +3,7 @@ import { Manrope } from 'next/font/google';
 
 import '@/styles/globals.css';
 import 'reactflow/dist/style.css';
+import '@/styles/reactflow.css';
 
 const manrope = Manrope({
   weight: ['400', '500', '600', '700'],

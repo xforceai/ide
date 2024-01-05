@@ -8,7 +8,7 @@ type BranchProps<T> = {
 };
 
 function Branch<T>({ item, level }: BranchProps<T>): React.JSX.Element {
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(item.initiallyExpanded ?? false);
   const hasChild = item?.children?.length;
 
   const renderSubBranches = () => {

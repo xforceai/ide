@@ -17,7 +17,10 @@ const MenuItem: React.FC<MenuItemProps> = (props: MenuItemProps) => {
   );
 };
 
-const TopBar: React.FC = () => {
+type Props = {
+  onSaveGraph: () => void;
+};
+const TopBar: React.FC<Props> = ({ onSaveGraph }: Props) => {
   const { setCtxMenuModal, setPoints } = React.useContext(ContextMenuContext);
   const { getNodes, getEdges } = useReactFlow();
 
@@ -27,7 +30,10 @@ const TopBar: React.FC = () => {
   const onClickFile = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
     e.stopPropagation();
-    setCtxMenuModal([{ name: 'Export As', sub: [{ name: 'Python...', onClick: onClickExportAsPython }] }]);
+    setCtxMenuModal([
+      { name: 'Save', onClick: onSaveGraph },
+      { name: 'Export As', sub: [{ name: 'Python...', onClick: onClickExportAsPython }, { name: 'Graph...' }] },
+    ]);
     setPoints({ x: e.pageX, y: e.pageY });
   };
   return (

@@ -9,6 +9,7 @@ import {
   useNodesState,
   Node as ReactFlowNode,
   Edge as ReactFlowEdge,
+  useReactFlow,
 } from 'reactflow';
 import { includes } from 'lodash';
 import { XForceNodesEnum, X_FORCE_NODES, extractNodeName } from '@/components/nodes/nodeTypes';
@@ -16,7 +17,11 @@ import { ContextMenuContext } from '@/contexts/ContextMenuContext';
 
 type ReturnType = ReactFlowProps & {
   reactFlowRef: React.MutableRefObject<HTMLDivElement | null>;
+  onSaveGraph: () => void;
+  restoreGraph: () => void;
 };
+
+const FLOW_KEY = 'X-FORCE_USER_FLOW';
 
 function useXForceReactFlow(): ReturnType {
   const { setCtxMenuModal, setPoints } = React.useContext(ContextMenuContext);
@@ -24,6 +29,7 @@ function useXForceReactFlow(): ReturnType {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = React.useState<ReactFlowInstance>();
+  const { setViewport } = useReactFlow();
 
   const isValidConnection = (connection: Connection): boolean => {
     const sourceKey = extractNodeName(connection.source || '');
@@ -111,6 +117,23 @@ function useXForceReactFlow(): ReturnType {
     setCtxMenuModal(null);
   };
 
+  const onSaveGraph = () => {
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
+      localStorage.setItem(FLOW_KEY, JSON.stringify(flow));
+    }
+  };
+
+  const restoreGraph = () => {
+    const flow = JSON.parse(localStorage.getItem(FLOW_KEY) || '');
+    if (flow) {
+      const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+      setNodes(flow.nodes || []);
+      setEdges(flow.edges || []);
+      setViewport({ x, y, zoom });
+    }
+  };
+
   return {
     reactFlowRef,
     nodes,
@@ -125,6 +148,8 @@ function useXForceReactFlow(): ReturnType {
     onNodeContextMenu,
     onEdgeContextMenu,
     onMove,
+    onSaveGraph,
+    restoreGraph,
   };
 }
 

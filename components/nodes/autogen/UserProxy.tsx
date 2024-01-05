@@ -108,7 +108,7 @@ const UserProxy: React.FC<ReactFlowNodeProps<UserProxyDataProps>> = (props) => {
         type="source"
         id="user_proxy_source"
         position={Position.Bottom}
-        className="rounded-none border-none w-16 h-1 bg-gray-400"
+        className="rounded-none border-none w-16 h-1"
         connectivity={2}
       />
     </div>
