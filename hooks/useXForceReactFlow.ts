@@ -107,6 +107,10 @@ function useXForceReactFlow(): ReturnType {
     [onDeleteEdge, setCtxMenuModal, setPoints],
   );
 
+  const onMove = () => {
+    setCtxMenuModal(null);
+  };
+
   return {
     reactFlowRef,
     nodes,
@@ -120,6 +124,7 @@ function useXForceReactFlow(): ReturnType {
     onInit,
     onNodeContextMenu,
     onEdgeContextMenu,
+    onMove,
   };
 }
 

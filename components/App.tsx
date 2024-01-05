@@ -22,6 +22,7 @@ const AppX = () => {
     onInit,
     onNodeContextMenu,
     onEdgeContextMenu,
+    onMove,
   } = useXForceReactFlow();
   return (
     <div className="flex h-full">
@@ -42,6 +43,7 @@ const AppX = () => {
           isValidConnection={isValidConnection}
           onNodeContextMenu={onNodeContextMenu}
           onEdgeContextMenu={onEdgeContextMenu}
+          onMove={onMove}
         >
           <Controls />
           <Background />
