@@ -14,7 +14,10 @@ const Modal: React.FC = () => {
 
   if (!modal || !CONTAINER) return null;
   return ReactDOM.createPortal(
-    <div className={`absolute ${MODAL_Z_INDEX}`} style={{ top: points.y, left: points.x }}>
+    <div
+      className={`absolute ${MODAL_Z_INDEX}`}
+      style={{ top: points.top, right: points.right, bottom: points.bottom, left: points.left }}
+    >
       {modal}
     </div>,
     CONTAINER,

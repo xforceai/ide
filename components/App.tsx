@@ -11,6 +11,7 @@ import { ModalContext } from '@/contexts/ModalContext/Context';
 import ContextMenuModal, { DefaultContextMenuItem } from '@/components/modals/ContextMenuModal';
 import { ContextMenuItemType } from '@/commons/types';
 import { Node as ReactFlowNode, Edge as ReactFlowEdge } from 'reactflow';
+import ToastMessageModal from '@/components/modals/ToastMessageModal';
 
 const AppX = () => {
   const {
@@ -32,7 +33,9 @@ const AppX = () => {
     setEdges,
   } = useXForceReactFlow();
   useOnCloseIDE({ reactFlowInstance: reactFlowInstance });
-  useKeyboardListener({ onSaveCmd: onSaveGraph });
+  useKeyboardListener({
+    onSave: { f: onSaveGraph, msg: <ToastMessageModal msg="Your changes successfully saved." /> },
+  });
   const { setModal, setPoints } = React.useContext(ModalContext);
   React.useEffect(() => {
     restoreGraph();
@@ -57,7 +60,7 @@ const AppX = () => {
   const onNodeContextMenu = React.useCallback(
     (event: React.MouseEvent, node: ReactFlowNode) => {
       const CTX_MENU__NODE: ContextMenuItemType[] = [{ item: 'Delete Node', onClick: () => onDeleteNode(node) }];
-      setPoints({ x: event.pageX, y: event.pageY });
+      setPoints({ top: event.pageX, left: event.pageY });
       setModal(<ContextMenuModal menu={CTX_MENU__NODE} />);
     },
     [onDeleteNode, setModal, setPoints],
@@ -65,7 +68,7 @@ const AppX = () => {
 
   const onEdgeContextMenu = React.useCallback(
     (event: React.MouseEvent, edge: ReactFlowEdge) => {
-      setPoints({ x: event.pageX, y: event.pageY });
+      setPoints({ top: event.pageX, left: event.pageY });
       const CTX_MENU__EDGE: ContextMenuItemType[] = [{ item: 'Delete Node', onClick: () => onDeleteEdge(edge) }];
       setModal(<ContextMenuModal menu={CTX_MENU__EDGE} />);
     },

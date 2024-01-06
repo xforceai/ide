@@ -1,17 +1,25 @@
-import React from 'react';
+import { ModalContext } from '@/contexts/ModalContext/Context';
+import React, { ReactElement } from 'react';
 
 type ArgsType = {
-  onSaveCmd?: () => any;
+  onSave?: {
+    f: () => any;
+    msg: ReactElement;
+  };
 };
-function useKeyboardListener({ onSaveCmd }: ArgsType) {
+function useKeyboardListener({ onSave }: ArgsType) {
+  const { setModal, setPoints } = React.useContext(ModalContext);
+
   const onKeyDown = React.useCallback(
     (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
         e.preventDefault();
-        onSaveCmd?.();
+        onSave?.f();
+        setModal(onSave?.msg || null);
+        setPoints({ bottom: 44, right: 44 });
       }
     },
-    [onSaveCmd],
+    [onSave, setModal, setPoints],
   );
 
   React.useEffect(() => {

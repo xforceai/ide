@@ -4,7 +4,7 @@ import React from 'react';
 import { useReactFlow } from 'reactflow';
 
 import { ContextMenuItemType } from '@/commons/types';
-import ContextMenuModal, { DefaultContextMenuItem } from '@/components/modals/ContextMenuModal';
+import ContextMenuModal from '@/components/modals/ContextMenuModal';
 
 type MenuItemProps = React.HTMLProps<HTMLDivElement> & {
   name: string;
@@ -26,6 +26,7 @@ type Props = {
 const TopBar: React.FC<Props> = ({ onSaveGraph }: Props) => {
   const { setModal, setPoints } = React.useContext(ModalContext);
   const { getNodes, getEdges } = useReactFlow();
+
   const onClickExportAsPython = () => {
     console.log(CODE_BUILDER(getNodes(), getEdges()));
   };
@@ -33,9 +34,10 @@ const TopBar: React.FC<Props> = ({ onSaveGraph }: Props) => {
     { item: 'Save', onClick: onSaveGraph },
     {
       item: 'Export As',
-      subItems: [
-        { item: 'Python', onClick: onClickExportAsPython },
-        { item: 'Graph...', onClick: () => null },
+      subs: [
+        { item: 'Python Code...', onClick: onClickExportAsPython },
+        { item: 'JSON Representation of the Graph...', onClick: () => null },
+        { item: 'PNG...', onClick: () => null },
       ],
     },
   ];
@@ -44,7 +46,7 @@ const TopBar: React.FC<Props> = ({ onSaveGraph }: Props) => {
     e.preventDefault();
     e.stopPropagation();
     setModal(<ContextMenuModal menu={CTX_MENU__FILE} />);
-    setPoints({ x: e.pageX, y: e.pageY });
+    setPoints({ top: e.pageX, left: e.pageY });
   };
   return (
     <div className={`absolute top-0 w-[calc(100vw-320px)] bg-gray-50 h-11 border-b border-b-gray-200 z-10 opacity-95`}>

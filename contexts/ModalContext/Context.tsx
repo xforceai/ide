@@ -1,16 +1,16 @@
-import { CartesianCoordinatesType } from '@/commons/types';
+import { PositionType } from '@/commons/types';
 import React from 'react';
 
 type ModalContextReturnType = {
   modal: React.JSX.Element | null;
   setModal: React.Dispatch<React.SetStateAction<React.JSX.Element | null>>;
-  points: CartesianCoordinatesType;
-  setPoints: React.Dispatch<React.SetStateAction<CartesianCoordinatesType>>;
+  points: PositionType;
+  setPoints: React.Dispatch<React.SetStateAction<PositionType>>;
 };
 
 export const ModalContext = React.createContext<ModalContextReturnType>({
   modal: null,
   setModal: () => null,
-  points: { x: 0, y: 0 },
+  points: {},
   setPoints: () => null,
 });
