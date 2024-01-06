@@ -9,9 +9,11 @@ import {
   useReactFlow,
   useStore,
   NodeProps as ReactFlowNodeProps,
+  NodeToolbar,
 } from 'reactflow';
 import { XForceNodesEnum } from '../nodeTypes';
 import useNodeHelper from '../helpers/node';
+import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/nodes/skeleton';
 
 export type UserProxyDataProps = {
   prompt: string;
@@ -52,6 +54,7 @@ const UserProxyHandle = (props: UserProxyHandlerProps) => {
 
 const UserProxy: React.FC<ReactFlowNodeProps<UserProxyDataProps>> = (props) => {
   const { addData } = useNodeHelper(props);
+  const [toolbarVisible, setToolbarVisible] = React.useState(false);
 
   const [varName, setVarName] = React.useState('');
 
@@ -82,7 +85,26 @@ const UserProxy: React.FC<ReactFlowNodeProps<UserProxyDataProps>> = (props) => {
     <div className="rounded-sm border border-gray-200 bg-white w-80">
       <div className={`${XForceNodesEnum.USER_PROXY} flex justify-between items-center border-b border-gray-200 py-2`}>
         <div className="font-bold ml-2">UserProxy</div>
-        <InformationCircleIcon width={24} className="text-gray-300 mr-2" />
+        <InformationCircleIcon
+          width={24}
+          className="text-gray-300 mr-2"
+          onMouseEnter={() => setToolbarVisible(true)}
+          onMouseLeave={() => setToolbarVisible(false)}
+        />
+        <NodeToolbar isVisible={toolbarVisible} position={Position.Top}>
+          <ToolbarSkeleton
+            header={<ClsHeaderSkeleton name="UserProxy" />}
+            content={
+              <DefaultContent
+                name="UserProxy"
+                description="is a proxy agent for the user, that can execute
+                code and provide feedback to the other agents. By default, the agent will prompt for human input every
+                time a message is received. Code execution is enabled by default. LLM-based auto reply is disabled by default."
+                docTeaser="Agent Name: Name of the agent."
+              />
+            }
+          />
+        </NodeToolbar>
       </div>
       <div className="p-2 bg-gray-50">
         <div className="flex justify-between items-center">
@@ -92,15 +114,6 @@ const UserProxy: React.FC<ReactFlowNodeProps<UserProxyDataProps>> = (props) => {
             placeholder="user_proxy"
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
             onChange={onVarNameChange}
-          />
-        </div>
-        <div className="flex justify-between items-center">
-          <div>System Message</div>
-          <input
-            type="text"
-            placeholder="You're an helpful AI assistant, and your job is ..."
-            className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
-            onChange={onPromptChange}
           />
         </div>
       </div>

@@ -17,8 +17,19 @@ export const ClsHeaderSkeleton: React.FC<ClsHeaderSkeletonProps> = ({ name }) =>
   );
 };
 
-type DefaultContentProps = {
+type MethodHeaderSkeletonProps = {
   name: string;
+};
+export const MethodHeaderSkeleton: React.FC<MethodHeaderSkeletonProps> = ({ name }) => {
+  return (
+    <p className="text-sm">
+      <span className="text-red-500">def</span>
+      <span className="text-sky-400 pl-1">{name}</span>
+    </p>
+  );
+};
+type DefaultContentProps = {
+  name?: string;
   description: string;
   docTeaser?: string;
 };
@@ -26,10 +37,10 @@ export const DefaultContent: React.FC<DefaultContentProps> = ({ name, descriptio
   return (
     <>
       <p className="text-sm">
-        <span className="bg-gray-100 px-1 rounded-[2px] text-gray-600">{name}</span>
+        {name && <span className="bg-gray-100 px-1 rounded-[2px] text-gray-600">{name}</span>}
         <span className="text-black pl-1">{description}</span>
       </p>
-      <p className="text-gray-500 text-sm mt-4">{docTeaser}</p>
+      <p className="text-gray-500 text-sm mt-4 whitespace-pre-line">{docTeaser}</p>
     </>
   );
 };

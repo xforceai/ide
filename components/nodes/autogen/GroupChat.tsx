@@ -55,13 +55,8 @@ const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
             content={
               <DefaultContent
                 name="GroupChat"
-                description="is a subclass of ConversableAgent configured with a default system message."
-                docTeaser={`A group chat class that contains the following data fields:
-                agents: a list of participating agents.
-                messages: a list of messages in the group chat.
-                max_round: the maximum number of rounds.
-                admin_name: the name of the admin agent if there is one. Default is "Admin". KeyBoardInterrupt will make the admin agent take over.
-                func_call_filter: whether to enforce function call filter. Default is True. When set to True and when a message is a function call suggestion, the next speaker will be chosen from an agent which contains the corresponding function name in its function_map.`}
+                description="is designed to enable agents to collaborate with each other. All agents should be included in a GroupChat to facilitate their communication and teamwork."
+                docTeaser={`Group Name: Name of the group. (ex: group_chat, my_x_force_group, etc.)\n\nMax Rounds: The maximum rounds that the agents will iterate (default: 15).\n\nAgent Selection: the method for selecting the next speaker (default: "auto").\n• "auto": the next speaker is selected automatically by LLM.\n• "manual": the next speaker is selected manually by user input.\n• "random": the next speaker is selected randomly.\n• "round_robin": the next speaker is selected in a round robin fashion, i.e., iterating in the same order as provided in agents.`}
               />
             }
           />
@@ -69,7 +64,7 @@ const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
       </div>
       <div className="p-2 bg-gray-50">
         <div className="flex justify-between items-center">
-          <div>Agent Name *</div>
+          <div>Group Name *</div>
           <input
             type="text"
             placeholder="my_gc"

@@ -1,7 +1,8 @@
 import { CODE_BUILDER } from '@/components/nodes/nodeTypes';
 import { ModalContext } from '@/contexts/ModalContext/Context';
 import React from 'react';
-import { useReactFlow } from 'reactflow';
+import { getRectOfNodes, getTransformForBounds, useReactFlow } from 'reactflow';
+import { toPng } from 'html-to-image';
 
 import { ContextMenuItemType } from '@/commons/types';
 import ContextMenuModal from '@/components/modals/ContextMenuModal';
@@ -24,13 +25,43 @@ const MenuItem: React.FC<MenuItemProps> = (props: MenuItemProps) => {
 type Props = {
   onSaveGraph: () => boolean;
 };
+
+const imageWidth = 1024;
+const imageHeight = 768;
+
 const TopBar: React.FC<Props> = ({ onSaveGraph }: Props) => {
   const { setModal, setPoints } = React.useContext(ModalContext);
   const { getNodes, getEdges } = useReactFlow();
 
   const onClickExportAsPython = () => {
-    console.log(CODE_BUILDER(getNodes(), getEdges()));
+    const element = document.createElement('a');
+    const file = new Blob([CODE_BUILDER(getNodes(), getEdges())], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = 'my x-force workflow.py';
+    document.body.appendChild(element);
+    element.click();
   };
+  const onClickExportAsPNG = async () => {
+    const nodesBounds = getRectOfNodes(getNodes());
+    const transform = getTransformForBounds(nodesBounds, imageWidth, imageHeight, 0.5, 2);
+    const viewport = document.querySelector('.react-flow__viewport');
+    if (!viewport) return null;
+    const png = await toPng(viewport as HTMLElement, {
+      backgroundColor: '#fff',
+      width: imageWidth,
+      height: imageHeight,
+      style: {
+        width: '1024',
+        height: '768',
+        transform: `translate(${transform[0]}px, ${transform[1]}px) scale(${transform[2]})`,
+      },
+    });
+    const a = document.createElement('a');
+    a.setAttribute('download', 'my x-force workflow.png');
+    a.setAttribute('href', png);
+    a.click();
+  };
+
   const onSave = () => {
     const res = onSaveGraph();
     if (res) {
@@ -44,8 +75,7 @@ const TopBar: React.FC<Props> = ({ onSaveGraph }: Props) => {
       item: 'Export As',
       subs: [
         { item: 'Python Code...', onClick: onClickExportAsPython },
-        { item: 'JSON Representation of the Graph...', onClick: () => null },
-        { item: 'PNG...', onClick: () => null },
+        { item: 'PNG...', onClick: onClickExportAsPNG },
       ],
     },
   ];

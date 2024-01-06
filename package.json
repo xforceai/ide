@@ -12,6 +12,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.18",
     "@svgr/webpack": "^8.1.0",
+    "html-to-image": "^1.11.11",
     "lodash": "^4.17.21",
     "next": "14.0.2",
     "prismjs": "^1.29.0",
