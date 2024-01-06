@@ -13,18 +13,21 @@ import {
 } from 'reactflow';
 import { includes } from 'lodash';
 import { XForceNodesEnum, X_FORCE_NODES, extractNodeName } from '@/components/nodes/nodeTypes';
-import { ContextMenuContext } from '@/contexts/ContextMenuContext';
+import { ModalContext } from '@/contexts/ModalContext/Context';
 
 type ReturnType = ReactFlowProps & {
   reactFlowRef: React.MutableRefObject<HTMLDivElement | null>;
   onSaveGraph: () => void;
   restoreGraph: () => void;
+  reactFlowInstance?: ReactFlowInstance;
+  setNodes: React.Dispatch<React.SetStateAction<ReactFlowNode<any, string | undefined>[]>>;
+  setEdges: React.Dispatch<React.SetStateAction<ReactFlowEdge<any>[]>>;
 };
 
-const FLOW_KEY = 'X-FORCE_USER_FLOW';
+export const FLOW_KEY = 'X-FORCE_USER_FLOW';
 
 function useXForceReactFlow(): ReturnType {
-  const { setCtxMenuModal, setPoints } = React.useContext(ContextMenuContext);
+  const { setModal } = React.useContext(ModalContext);
   const reactFlowRef = React.useRef<HTMLDivElement | null>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -72,49 +75,9 @@ function useXForceReactFlow(): ReturnType {
 
   const onInit = (rf: ReactFlowInstance) => setReactFlowInstance(rf);
 
-  const onDeleteNode = React.useCallback(
-    (node: ReactFlowNode) => {
-      setNodes((nodes) => nodes.filter((n) => n.id !== node.id));
-      setEdges((edges) => edges.filter((e) => e.source !== node.id));
-    },
-    [setNodes, setEdges],
-  );
-
-  const onDeleteEdge = React.useCallback(
-    (edge: ReactFlowEdge) => {
-      setEdges((edges) => edges.filter((e) => e.id !== edge.id));
-    },
-    [setEdges],
-  );
-
-  const onNodeContextMenu = React.useCallback(
-    (event: React.MouseEvent, node: ReactFlowNode) => {
-      setPoints({ x: event.pageX, y: event.pageY });
-      setCtxMenuModal([
-        {
-          name: 'Delete Node',
-          onClick: () => onDeleteNode(node),
-        },
-      ]);
-    },
-    [onDeleteNode, setCtxMenuModal, setPoints],
-  );
-
-  const onEdgeContextMenu = React.useCallback(
-    (event: React.MouseEvent, edge: ReactFlowEdge) => {
-      setPoints({ x: event.pageX, y: event.pageY });
-      setCtxMenuModal([
-        {
-          name: 'Delete Edge',
-          onClick: () => onDeleteEdge(edge),
-        },
-      ]);
-    },
-    [onDeleteEdge, setCtxMenuModal, setPoints],
-  );
-
   const onMove = () => {
-    setCtxMenuModal(null);
+    console.log('here');
+    setModal(null);
   };
 
   const onSaveGraph = () => {
@@ -145,11 +108,12 @@ function useXForceReactFlow(): ReturnType {
     onDragOver,
     onConnect,
     onInit,
-    onNodeContextMenu,
-    onEdgeContextMenu,
     onMove,
     onSaveGraph,
     restoreGraph,
+    reactFlowInstance,
+    setNodes,
+    setEdges,
   };
 }
 

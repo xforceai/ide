@@ -1,3 +1,4 @@
+import { MODAL_ROOT_DIV_ID } from '@/commons/constants';
 import { Html, Head, Main, NextScript } from 'next/document';
 
 export default function Document() {
@@ -7,7 +8,7 @@ export default function Document() {
       <body>
         <Main />
         <NextScript />
-        <div id="context-menu-modal-root"></div>
+        <div id={MODAL_ROOT_DIV_ID}></div>
       </body>
     </Html>
   );

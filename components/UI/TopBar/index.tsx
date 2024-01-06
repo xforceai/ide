@@ -1,7 +1,10 @@
 import { CODE_BUILDER } from '@/components/nodes/nodeTypes';
-import { ContextMenuContext } from '@/contexts/ContextMenuContext';
+import { ModalContext } from '@/contexts/ModalContext/Context';
 import React from 'react';
 import { useReactFlow } from 'reactflow';
+
+import { ContextMenuItemType } from '@/commons/types';
+import ContextMenuModal, { DefaultContextMenuItem } from '@/components/modals/ContextMenuModal';
 
 type MenuItemProps = React.HTMLProps<HTMLDivElement> & {
   name: string;
@@ -21,19 +24,26 @@ type Props = {
   onSaveGraph: () => void;
 };
 const TopBar: React.FC<Props> = ({ onSaveGraph }: Props) => {
-  const { setCtxMenuModal, setPoints } = React.useContext(ContextMenuContext);
+  const { setModal, setPoints } = React.useContext(ModalContext);
   const { getNodes, getEdges } = useReactFlow();
-
   const onClickExportAsPython = () => {
     console.log(CODE_BUILDER(getNodes(), getEdges()));
   };
+  const CTX_MENU__FILE: ContextMenuItemType[] = [
+    { item: 'Save', onClick: onSaveGraph },
+    {
+      item: 'Export As',
+      subItems: [
+        { item: 'Python', onClick: onClickExportAsPython },
+        { item: 'Graph...', onClick: () => null },
+      ],
+    },
+  ];
+
   const onClickFile = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
     e.stopPropagation();
-    setCtxMenuModal([
-      { name: 'Save', onClick: onSaveGraph },
-      { name: 'Export As', sub: [{ name: 'Python...', onClick: onClickExportAsPython }, { name: 'Graph...' }] },
-    ]);
+    setModal(<ContextMenuModal menu={CTX_MENU__FILE} />);
     setPoints({ x: e.pageX, y: e.pageY });
   };
   return (
