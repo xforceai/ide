@@ -1,8 +1,8 @@
+import { LOCAL_HISTORY_KEY } from '@/commons/constants';
 import { isEqual } from 'lodash';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { ReactFlowInstance } from 'reactflow';
-import { FLOW_KEY } from './useXForceReactFlow';
 
 type ArgsType = {
   reactFlowInstance?: ReactFlowInstance;
@@ -15,7 +15,10 @@ function useOnCloseIDE({ reactFlowInstance, callback }: ArgsType): void {
   const beforeUnload = React.useCallback(
     (e: BeforeUnloadEvent) => {
       if (!reactFlowInstance) return;
-      const diff = !isEqual(JSON.parse(localStorage.getItem(FLOW_KEY) || ''), reactFlowInstance?.toObject() || '');
+      const diff = !isEqual(
+        JSON.parse(localStorage.getItem(LOCAL_HISTORY_KEY) || ''),
+        reactFlowInstance?.toObject() || '',
+      );
       if (diff) {
         e.preventDefault();
         e.returnValue = true;

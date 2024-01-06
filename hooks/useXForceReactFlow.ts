@@ -14,17 +14,16 @@ import {
 import { includes } from 'lodash';
 import { XForceNodesEnum, X_FORCE_NODES, extractNodeName } from '@/components/nodes/nodeTypes';
 import { ModalContext } from '@/contexts/ModalContext/Context';
+import { LOCAL_HISTORY_KEY } from '@/commons/constants';
 
 type ReturnType = ReactFlowProps & {
   reactFlowRef: React.MutableRefObject<HTMLDivElement | null>;
-  onSaveGraph: () => void;
+  onSaveGraph: () => boolean;
   restoreGraph: () => void;
   reactFlowInstance?: ReactFlowInstance;
   setNodes: React.Dispatch<React.SetStateAction<ReactFlowNode<any, string | undefined>[]>>;
   setEdges: React.Dispatch<React.SetStateAction<ReactFlowEdge<any>[]>>;
 };
-
-export const FLOW_KEY = 'X-FORCE_USER_FLOW';
 
 function useXForceReactFlow(): ReturnType {
   const { setModal } = React.useContext(ModalContext);
@@ -76,19 +75,20 @@ function useXForceReactFlow(): ReturnType {
   const onInit = (rf: ReactFlowInstance) => setReactFlowInstance(rf);
 
   const onMove = () => {
-    console.log('here');
     setModal(null);
   };
 
   const onSaveGraph = () => {
     if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
-      localStorage.setItem(FLOW_KEY, JSON.stringify(flow));
+      localStorage.setItem(LOCAL_HISTORY_KEY, JSON.stringify(flow));
+      return true;
     }
+    return false;
   };
 
   const restoreGraph = () => {
-    const flow = JSON.parse(localStorage.getItem(FLOW_KEY) || '');
+    const flow = JSON.parse(localStorage.getItem(LOCAL_HISTORY_KEY) || '');
     if (flow) {
       const { x = 0, y = 0, zoom = 1 } = flow.viewport;
       setNodes(flow.nodes || []);

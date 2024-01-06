@@ -5,6 +5,7 @@ import { useReactFlow } from 'reactflow';
 
 import { ContextMenuItemType } from '@/commons/types';
 import ContextMenuModal from '@/components/modals/ContextMenuModal';
+import ToastMessageModal from '@/components/modals/ToastMessageModal';
 
 type MenuItemProps = React.HTMLProps<HTMLDivElement> & {
   name: string;
@@ -21,7 +22,7 @@ const MenuItem: React.FC<MenuItemProps> = (props: MenuItemProps) => {
 };
 
 type Props = {
-  onSaveGraph: () => void;
+  onSaveGraph: () => boolean;
 };
 const TopBar: React.FC<Props> = ({ onSaveGraph }: Props) => {
   const { setModal, setPoints } = React.useContext(ModalContext);
@@ -30,8 +31,15 @@ const TopBar: React.FC<Props> = ({ onSaveGraph }: Props) => {
   const onClickExportAsPython = () => {
     console.log(CODE_BUILDER(getNodes(), getEdges()));
   };
+  const onSave = () => {
+    const res = onSaveGraph();
+    if (res) {
+      setModal(<ToastMessageModal msg="Changes saved." />);
+      setPoints({ bottom: 44, right: 44 });
+    }
+  };
   const CTX_MENU__FILE: ContextMenuItemType[] = [
-    { item: 'Save', onClick: onSaveGraph },
+    { item: 'Save', onClick: onSave },
     {
       item: 'Export As',
       subs: [
@@ -46,7 +54,7 @@ const TopBar: React.FC<Props> = ({ onSaveGraph }: Props) => {
     e.preventDefault();
     e.stopPropagation();
     setModal(<ContextMenuModal menu={CTX_MENU__FILE} />);
-    setPoints({ top: e.pageX, left: e.pageY });
+    setPoints({ left: e.pageX, top: e.pageY });
   };
   return (
     <div className={`absolute top-0 w-[calc(100vw-320px)] bg-gray-50 h-11 border-b border-b-gray-200 z-10 opacity-95`}>

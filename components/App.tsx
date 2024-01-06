@@ -34,7 +34,7 @@ const AppX = () => {
   } = useXForceReactFlow();
   useOnCloseIDE({ reactFlowInstance: reactFlowInstance });
   useKeyboardListener({
-    onSave: { f: onSaveGraph, msg: <ToastMessageModal msg="Your changes successfully saved." /> },
+    onSave: { f: onSaveGraph, msg: <ToastMessageModal msg="Your changes successfully saved." /> }, // probably this is anti-pattern or there are better ways to handle / probably using emitters
   });
   const { setModal, setPoints } = React.useContext(ModalContext);
   React.useEffect(() => {
@@ -60,7 +60,7 @@ const AppX = () => {
   const onNodeContextMenu = React.useCallback(
     (event: React.MouseEvent, node: ReactFlowNode) => {
       const CTX_MENU__NODE: ContextMenuItemType[] = [{ item: 'Delete Node', onClick: () => onDeleteNode(node) }];
-      setPoints({ top: event.pageX, left: event.pageY });
+      setPoints({ left: event.pageX, top: event.pageY });
       setModal(<ContextMenuModal menu={CTX_MENU__NODE} />);
     },
     [onDeleteNode, setModal, setPoints],
@@ -68,7 +68,7 @@ const AppX = () => {
 
   const onEdgeContextMenu = React.useCallback(
     (event: React.MouseEvent, edge: ReactFlowEdge) => {
-      setPoints({ top: event.pageX, left: event.pageY });
+      setPoints({ left: event.pageX, top: event.pageY });
       const CTX_MENU__EDGE: ContextMenuItemType[] = [{ item: 'Delete Node', onClick: () => onDeleteEdge(edge) }];
       setModal(<ContextMenuModal menu={CTX_MENU__EDGE} />);
     },
