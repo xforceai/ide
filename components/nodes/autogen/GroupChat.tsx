@@ -1,44 +1,41 @@
-import React, { memo } from 'react';
-import { Position, Handle, NodeProps as ReactFlowNodeProps, NodeToolbar } from 'reactflow';
+import { XForceNodesEnum } from '@/components/nodes/nodeTypes';
+import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/nodes/skeleton';
+import useNodeStore from '@/hooks/useNodeStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import { XForceNodesEnum } from '../nodeTypes';
-import useNodeHelper from '../helpers/node';
-import { ToolbarSkeleton, ClsHeaderSkeleton, DefaultContent } from '../skeleton';
+import React, { memo } from 'react';
+import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps } from 'reactflow';
 
-const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
-  const { addData } = useNodeHelper(props);
-
-  const [agentName, setAgentName] = React.useState('');
-  const [maxRounds, setMaxRounds] = React.useState<number>();
-  const [agentSelection, setAgentSelection] = React.useState('auto');
+type GroupChatDataType = {
+  varName: string;
+  maxRounds: number;
+  agentSelection: string;
+};
+const GroupChat: React.FC<ReactFlowNodeProps> = (props) => {
+  const { data, addData } = useNodeStore<GroupChatDataType>(props);
   const [toolbarVisible, setToolbarVisible] = React.useState(false);
 
   const onAgentNameChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
       const val = evt.target.value;
-      setAgentName(val);
-      addData({ varName: agentName });
+      addData({ varName: val });
     },
-    [addData, agentName],
+    [addData],
   );
   const onMaxRoundsChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
       const val = evt.target.value;
-      setMaxRounds(parseInt(val));
-      addData({ maxRounds: maxRounds });
+      addData({ maxRounds: parseInt(val) });
     },
-    [addData, maxRounds],
+    [addData],
   );
-  const onSpeakerSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    setAgentSelection(val);
-    addData({ agentSelection: val });
-  };
+  const onSpeakerSelectionChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const val = e.target.value;
+      addData({ agentSelection: val });
+    },
+    [addData],
+  );
 
-  React.useEffect(() => {
-    addData({ agentSelection: 'auto', varNam: 'gc', maxRounds: 15 });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
   return (
     <div className="rounded-sm border border-gray-200 bg-white min-w-80">
       <div className={`${XForceNodesEnum.GROUP_CHAT} flex justify-between items-center border-b border-gray-200 py-2`}>
@@ -69,6 +66,7 @@ const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
             type="text"
             placeholder="my_gc"
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
+            value={data?.varName}
             onChange={onAgentNameChange}
           />
         </div>
@@ -76,9 +74,9 @@ const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
           <div>Max Rounds</div>
           <input
             type="number"
-            value={maxRounds?.toString()}
             placeholder="15"
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
+            value={data?.maxRounds}
             onChange={onMaxRoundsChange}
           />
         </div>
@@ -86,8 +84,8 @@ const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
           <div>Agent Selection</div>
           <select
             className="bg-gray-100 border border-gray-300 text-sm rounded-sm"
+            value={data?.agentSelection}
             onChange={onSpeakerSelectionChange}
-            value={agentSelection}
           >
             <option value={'auto'}>auto</option>
             <option value={'manual'}>manual</option>
@@ -101,4 +99,4 @@ const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
   );
 };
 
-export default memo(GPTAssistantAgent);
+export default memo(GroupChat);

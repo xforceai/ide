@@ -2,14 +2,17 @@ import React from 'react';
 
 import { NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
 
-type ReturnType = {
-  addData: (a: { [k: string]: any }) => void;
+type ReturnType<T> = {
+  data?: T;
+  addData: (v: Partial<T>) => void;
 };
-function useNodeHelper(props: ReactFlowNodeProps): ReturnType {
-  const { setNodes } = useReactFlow();
+// zustand might work better here instead of managing the store like this: https://reactflow.dev/learn/advanced-use/state-management
+// but currently this implementation satisfy our needs.
+function useNodeStore<T>(props: ReactFlowNodeProps): ReturnType<T> {
+  const { setNodes, getNode } = useReactFlow();
 
   const addData = React.useCallback(
-    (a: { [k: string]: any }) => {
+    (v: Partial<T>) => {
       setNodes((nodes) =>
         nodes.map((node) => {
           if (node.id === props.id) {
@@ -17,7 +20,7 @@ function useNodeHelper(props: ReactFlowNodeProps): ReturnType {
               ...node,
               data: {
                 ...node.data,
-                ...a,
+                ...v,
               },
             };
           }
@@ -29,8 +32,9 @@ function useNodeHelper(props: ReactFlowNodeProps): ReturnType {
   );
 
   return {
+    data: getNode(props.id)?.data,
     addData,
   };
 }
 
-export default useNodeHelper;
+export default useNodeStore;

@@ -17,6 +17,33 @@ const Panel = () => {
   const treeData: TreeProps<{}>['data'] = [
     {
       id: 'n1',
+      name: 'Configs',
+      initiallyExpanded: true,
+      draggable: false,
+      children: [
+        {
+          id: 'n1',
+          name: 'OpenAI',
+          onDrag: (event) => onDragStart(event, X_FORCE_NODES.LLM_OPENAI),
+          jsxElement: (
+            <NodeSkeleton
+              name="OpenAI"
+              content={
+                <div className="text-sm">
+                  <span>
+                    Provide foundational models from{' '}
+                    <span className="bg-gray-100 px-1 text-gray-700 rounded-sm mr-1 font-semibold">OpenAI</span> to your
+                    agents to use.
+                  </span>
+                </div>
+              }
+            />
+          ),
+        },
+      ],
+    },
+    {
+      id: 'n2',
       name: 'Agents',
       initiallyExpanded: true,
       draggable: false,
@@ -72,7 +99,7 @@ const Panel = () => {
       ],
     },
     {
-      id: 'n2',
+      id: 'n3',
       name: 'Tools',
       children: [
         {

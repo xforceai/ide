@@ -10,6 +10,7 @@ import {
   Node as ReactFlowNode,
   Edge as ReactFlowEdge,
   useReactFlow,
+  ReactFlowJsonObject,
 } from 'reactflow';
 import { includes } from 'lodash';
 import { XForceNodesEnum, X_FORCE_NODES, extractNodeName } from '@/components/nodes/nodeTypes';
@@ -19,8 +20,9 @@ import { LOCAL_HISTORY_KEY } from '@/commons/constants';
 type ReturnType = ReactFlowProps & {
   reactFlowRef: React.MutableRefObject<HTMLDivElement | null>;
   onSaveGraph: () => boolean;
+  onNewGraph: () => boolean;
   restoreGraph: () => void;
-  reactFlowInstance?: ReactFlowInstance;
+  maskedFlow: ReactFlowJsonObject<any, any> | null;
   setNodes: React.Dispatch<React.SetStateAction<ReactFlowNode<any, string | undefined>[]>>;
   setEdges: React.Dispatch<React.SetStateAction<ReactFlowEdge<any>[]>>;
 };
@@ -78,23 +80,47 @@ function useXForceReactFlow(): ReturnType {
     setModal(null);
   };
 
+  const maskedFlow = (): ReactFlowJsonObject<any, any> | null => {
+    if (reactFlowInstance) {
+      let flow = reactFlowInstance.toObject();
+      const maskedNodes = flow.nodes.map((n) => {
+        if (n.type === XForceNodesEnum.LLM_OPENAI) {
+          return { ...n, data: { ...n.data, apiKey: '' } };
+        }
+        return n;
+      });
+      flow.nodes = maskedNodes;
+      return flow;
+    }
+    return null;
+  };
+
   const onSaveGraph = () => {
     if (reactFlowInstance) {
-      const flow = reactFlowInstance.toObject();
-      localStorage.setItem(LOCAL_HISTORY_KEY, JSON.stringify(flow));
+      localStorage.setItem(LOCAL_HISTORY_KEY, JSON.stringify(maskedFlow()));
       return true;
     }
     return false;
   };
 
   const restoreGraph = () => {
-    const flow = JSON.parse(localStorage.getItem(LOCAL_HISTORY_KEY) || '');
-    if (flow) {
-      const { x = 0, y = 0, zoom = 1 } = flow.viewport;
-      setNodes(flow.nodes || []);
-      setEdges(flow.edges || []);
-      setViewport({ x, y, zoom });
+    const history = localStorage.getItem(LOCAL_HISTORY_KEY);
+    if (history) {
+      const flow = JSON.parse(history);
+      if (flow) {
+        const { x = 0, y = 0, zoom = 1 } = flow.viewport;
+        setNodes(flow.nodes || []);
+        setEdges(flow.edges || []);
+        setViewport({ x, y, zoom });
+      }
     }
+  };
+
+  const onNewGraph = (): boolean => {
+    const res = onSaveGraph();
+    setEdges([]);
+    setNodes([]);
+    return res;
   };
 
   return {
@@ -110,9 +136,10 @@ function useXForceReactFlow(): ReturnType {
     onInit,
     onMove,
     onSaveGraph,
+    onNewGraph,
     restoreGraph,
-    reactFlowInstance,
     setNodes,
+    maskedFlow: maskedFlow(),
     setEdges,
   };
 }

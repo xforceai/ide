@@ -28,11 +28,12 @@ const AppX = () => {
     onMove,
     onSaveGraph,
     restoreGraph,
-    reactFlowInstance,
     setNodes,
     setEdges,
+    onNewGraph,
+    maskedFlow,
   } = useXForceReactFlow();
-  useOnCloseIDE({ reactFlowInstance: reactFlowInstance });
+  useOnCloseIDE({ maskedFlow });
   useKeyboardListener({
     onSave: { f: onSaveGraph, msg: <ToastMessageModal msg="Your changes successfully saved." /> }, // probably this is anti-pattern or there are better ways to handle / probably using emitters
   });
@@ -69,7 +70,7 @@ const AppX = () => {
   const onEdgeContextMenu = React.useCallback(
     (event: React.MouseEvent, edge: ReactFlowEdge) => {
       setPoints({ left: event.pageX, top: event.pageY });
-      const CTX_MENU__EDGE: ContextMenuItemType[] = [{ item: 'Delete Node', onClick: () => onDeleteEdge(edge) }];
+      const CTX_MENU__EDGE: ContextMenuItemType[] = [{ item: 'Delete Edge', onClick: () => onDeleteEdge(edge) }];
       setModal(<ContextMenuModal menu={CTX_MENU__EDGE} />);
     },
     [onDeleteEdge, setModal, setPoints],
@@ -79,7 +80,7 @@ const AppX = () => {
     <div className="flex h-screen">
       <LibraryPanel />
       <div className="flex-grow">
-        <TopBar onSaveGraph={onSaveGraph} />
+        <TopBar onSaveGraph={onSaveGraph} onNewGraph={onNewGraph} onRestore={restoreGraph} />
         <ReactFlow
           ref={reactFlowRef}
           nodes={nodes}

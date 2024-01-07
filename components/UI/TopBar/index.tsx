@@ -24,18 +24,22 @@ const MenuItem: React.FC<MenuItemProps> = (props: MenuItemProps) => {
 
 type Props = {
   onSaveGraph: () => boolean;
+  onNewGraph: () => boolean;
+  onRestore: () => void;
 };
 
 const imageWidth = 1024;
 const imageHeight = 768;
 
-const TopBar: React.FC<Props> = ({ onSaveGraph }: Props) => {
+const TopBar: React.FC<Props> = ({ onSaveGraph, onNewGraph, onRestore }: Props) => {
   const { setModal, setPoints } = React.useContext(ModalContext);
   const { getNodes, getEdges } = useReactFlow();
 
   const onClickExportAsPython = () => {
     const element = document.createElement('a');
+    console.log(CODE_BUILDER(getNodes(), getEdges()));
     const file = new Blob([CODE_BUILDER(getNodes(), getEdges())], { type: 'text/plain' });
+
     element.href = URL.createObjectURL(file);
     element.download = 'my x-force workflow.py';
     document.body.appendChild(element);
@@ -70,7 +74,9 @@ const TopBar: React.FC<Props> = ({ onSaveGraph }: Props) => {
     }
   };
   const CTX_MENU__FILE: ContextMenuItemType[] = [
+    { item: 'New', onClick: onNewGraph },
     { item: 'Save', onClick: onSave },
+    { item: 'Restore previous graph...', onClick: onRestore },
     {
       item: 'Export As',
       subs: [

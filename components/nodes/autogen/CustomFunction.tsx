@@ -7,25 +7,20 @@ import 'prismjs/components/prism-clike';
 import 'prismjs/components/prism-python';
 import 'prismjs/themes/prism.css';
 import { XForceNodesEnum } from '../nodeTypes';
-import useNodeHelper from '../helpers/node';
+import useNodeStore from '@/hooks/useNodeStore';
 import { DefaultContent, MethodHeaderSkeleton, ToolbarSkeleton } from '@/components/nodes/skeleton';
 
+type CustomFunctionNodeDataType = {
+  func: string;
+};
+
 const CustomFunction: React.FC<ReactFlowNodeProps> = (props) => {
-  const { addData } = useNodeHelper(props);
-  const [code, setCode] = React.useState(
-    props.data.func || `def my_custom_function(arg1, arg2): \n\treturn arg1 + arg2`,
-  );
+  const { data, addData } = useNodeStore<CustomFunctionNodeDataType>(props);
   const [toolbarVisible, setToolbarVisible] = React.useState(false);
 
   const onCustomFuncChange = (code: string) => {
-    setCode(code);
     addData({ func: code });
   };
-
-  React.useEffect(() => {
-    addData({ func: code });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div className="nowheel rounded-sm border border-gray-200 bg-white min-w-80">
@@ -54,7 +49,7 @@ const CustomFunction: React.FC<ReactFlowNodeProps> = (props) => {
       <div className="p-2 bg-gray-50">
         <div className="flex justify-between items-center pt-2">
           <Editor
-            value={code}
+            value={data?.func || `def my_custom_function(arg1, arg2): \n\treturn arg1 + arg2`}
             onValueChange={onCustomFuncChange}
             highlight={(code) => highlight(code, languages.python)}
             className="max-w-96 max-h-96 overflow-y-auto"

@@ -2,30 +2,36 @@ import { LOCAL_HISTORY_KEY } from '@/commons/constants';
 import { isEqual } from 'lodash';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { ReactFlowInstance } from 'reactflow';
+import { ReactFlowJsonObject, Node as ReactFlowNode } from 'reactflow';
 
 type ArgsType = {
-  reactFlowInstance?: ReactFlowInstance;
+  maskedFlow: ReactFlowJsonObject<any, any> | null;
   callback?: () => any;
 };
 
-function useOnCloseIDE({ reactFlowInstance, callback }: ArgsType): void {
+function useOnCloseIDE({ maskedFlow, callback }: ArgsType): void {
   const router = useRouter();
 
   const beforeUnload = React.useCallback(
     (e: BeforeUnloadEvent) => {
-      if (!reactFlowInstance) return;
-      const diff = !isEqual(
-        JSON.parse(localStorage.getItem(LOCAL_HISTORY_KEY) || ''),
-        reactFlowInstance?.toObject() || '',
-      );
-      if (diff) {
+      const hasLocalStorage = localStorage.getItem(LOCAL_HISTORY_KEY) !== null;
+      const hasChanges = maskedFlow !== null;
+      if (!hasLocalStorage && !hasChanges) return false;
+      if (!hasLocalStorage) {
+        e.preventDefault();
+        e.returnValue = true;
+        callback?.();
+        console.log('here');
+        return true;
+      }
+      const diff = !isEqual(JSON.parse(localStorage.getItem(LOCAL_HISTORY_KEY) || ''), maskedFlow || '');
+      if (diff || localStorage.getItem(LOCAL_HISTORY_KEY) == null) {
         e.preventDefault();
         e.returnValue = true;
         callback?.();
       }
     },
-    [callback, reactFlowInstance],
+    [callback, maskedFlow],
   );
 
   React.useEffect(() => {
