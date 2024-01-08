@@ -12,15 +12,15 @@
   "dependencies": {
     "@heroicons/react": "^2.0.18",
     "@svgr/webpack": "^8.1.0",
+    "ace-builds": "^1.32.3",
     "html-to-image": "^1.11.11",
     "lodash": "^4.17.21",
     "next": "14.0.2",
-    "prismjs": "^1.29.0",
     "react": "^18",
+    "react-ace": "^10.1.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18",
-    "react-simple-code-editor": "^0.13.1",
     "reactflow": "^11.10.1",
     "uuid": "^9.0.1"
   },
