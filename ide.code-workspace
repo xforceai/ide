@@ -1,0 +1,24 @@
+{
+  "folders": [
+    {
+      "name": "ide",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true,
+      "source.organizeImports": "always"
+    },
+    "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+    "javascript.preferences.importModuleSpecifier": "non-relative",
+    "javascript.preferences.importModuleSpecifierEnding": "minimal",
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "typescript.preferences.importModuleSpecifierEnding": "minimal",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "cSpell.words": ["esbenp", "nextjs", "OPENAI", "reactflow", "zustand"]
+  }
+}

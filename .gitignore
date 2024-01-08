@@ -37,4 +37,5 @@ next-env.d.ts
 
 
 /agi
+/secret_transpiler
 .env

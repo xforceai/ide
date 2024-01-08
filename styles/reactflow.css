@@ -1,0 +1,14 @@
+.XForceIDE .react-flow__handle {
+  background: #9ca3af;
+}
+.XForceIDE .react-flow__node-custominput {
+  background: #fff;
+}
+
+.XForceIDE .react-flow__handle-connecting {
+  background: #ff6060;
+}
+
+.XForceIDE .react-flow__handle-valid {
+  background: #55dd99;
+}
