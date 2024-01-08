@@ -1,5 +1,5 @@
 import { ContextMenuItemType } from '@/commons/types';
-import { ModalContext } from '@/contexts/ModalContext/Context';
+import { ModalContext } from '@/contexts/ModalContext';
 import { ChevronRightIcon } from '@heroicons/react/24/solid';
 import React from 'react';
 
@@ -7,10 +7,11 @@ type ContextMenuModalPropsType = {
   menu: ContextMenuItemType[];
 };
 const ContextMenuModal: React.FC<ContextMenuModalPropsType> = ({ menu }) => {
+  const ref = React.useRef<HTMLDivElement>(null);
   let { setModal } = React.useContext(ModalContext);
   React.useEffect(() => {
-    const onClick = () => {
-      // if (ref.current && !ref.current.contains(e.target as Node)) {} // TODO: Probably we don't want this.
+    const onClick = (_: MouseEvent) => {
+      // TODO [P2]: if ref.current contains e.target, and if e.target have a child, don't close the modal
       setModal(null);
     };
     document.addEventListener('click', onClick);
@@ -23,11 +24,13 @@ const ContextMenuModal: React.FC<ContextMenuModalPropsType> = ({ menu }) => {
     return menu?.map((menuItem, index) => <ContextMenuItem key={index} {...menuItem} />);
   };
   return (
-    <div className="bg-gray-200 border border-gray-300 rounded-[4px] cursor-pointer select-none">
+    <div className="bg-gray-200 border border-gray-300 rounded-[4px] cursor-pointer select-none" ref={ref}>
       <ul>{renderItems()}</ul>
     </div>
   );
 };
+
+export default ContextMenuModal;
 
 const ContextMenuItem: React.FC<ContextMenuItemType> = (props) => {
   const [isChildrenVisible, setChildrenVisible] = React.useState(false);
@@ -75,5 +78,3 @@ export const DefaultContextMenuItem: React.FC<React.HTMLProps<HTMLParagraphEleme
     </p>
   );
 };
-
-export default ContextMenuModal;

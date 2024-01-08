@@ -1,8 +1,8 @@
-import { CODE_BUILDER } from '@/components/nodes/nodeTypes';
-import { ModalContext } from '@/contexts/ModalContext/Context';
+import { CODE_BUILDER } from '@/components/UI/libraryPanel/nodes/nodeTypes';
+import { ModalContext } from '@/contexts/ModalContext';
+import { toPng } from 'html-to-image';
 import React from 'react';
 import { getRectOfNodes, getTransformForBounds, useReactFlow } from 'reactflow';
-import { toPng } from 'html-to-image';
 
 import { ContextMenuItemType } from '@/commons/types';
 import ContextMenuModal from '@/components/modals/ContextMenuModal';
@@ -37,7 +37,6 @@ const TopBar: React.FC<Props> = ({ onSaveGraph, onNewGraph, onRestore }: Props) 
 
   const onClickExportAsPython = () => {
     const element = document.createElement('a');
-    console.log(CODE_BUILDER(getNodes(), getEdges()));
     const file = new Blob([CODE_BUILDER(getNodes(), getEdges())], { type: 'text/plain' });
 
     element.href = URL.createObjectURL(file);

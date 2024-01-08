@@ -1,12 +1,13 @@
-import React from 'react';
-import { InformationCircleIcon } from '@heroicons/react/24/outline';
-import { Handle, Position, NodeProps as ReactFlowNodeProps, NodeToolbar } from 'reactflow';
-import { XForceNodesEnum } from '../nodeTypes';
-import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/nodes/skeleton';
+import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
 import useNodeStore from '@/hooks/useNodeStore';
+import { InformationCircleIcon } from '@heroicons/react/24/outline';
+import React from 'react';
+import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps } from 'reactflow';
+import { XForceNodesEnum } from '../nodeTypes';
 
 type UserProxyDataType = {
   varName: string;
+  prompt: string;
 };
 const UserProxy: React.FC<ReactFlowNodeProps> = (props) => {
   const { data, addData } = useNodeStore<UserProxyDataType>(props);
@@ -14,8 +15,16 @@ const UserProxy: React.FC<ReactFlowNodeProps> = (props) => {
 
   const onVarNameChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
-      const val = evt.target.value;
+      const val = evt.target.value.trim();
       addData({ varName: val });
+    },
+    [addData],
+  );
+
+  const onPromptChange = React.useCallback(
+    (evt: React.ChangeEvent<HTMLInputElement>) => {
+      const val = evt.target.value;
+      addData({ prompt: val });
     },
     [addData],
   );
@@ -54,6 +63,18 @@ const UserProxy: React.FC<ReactFlowNodeProps> = (props) => {
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
             onChange={onVarNameChange}
             value={data?.varName}
+          />
+        </div>
+      </div>
+      <div className="p-2 bg-gray-50 pt-2">
+        <div className="flex justify-between items-center">
+          <div>Initial Prompt</div>
+          <input
+            type="text"
+            placeholder="user_proxy"
+            className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
+            onChange={onPromptChange}
+            value={data?.prompt}
           />
         </div>
       </div>

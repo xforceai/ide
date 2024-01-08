@@ -1,17 +1,17 @@
 import React from 'react';
-import ReactFlow, { Controls, Background } from 'reactflow';
+import ReactFlow, { Background, Controls } from 'reactflow';
 
-import { CUSTOM_X_FORCE_NODES } from './nodes/nodeTypes';
-import LibraryPanel from './UI/LibraryPanel/Panel';
-import TopBar from './UI/TopBar';
-import useXForceReactFlow from '@/hooks/useXForceReactFlow';
-import useOnCloseIDE from '@/hooks/useOnCloseIDE';
-import useKeyboardListener from '@/hooks/useKeyboardListener';
-import { ModalContext } from '@/contexts/ModalContext/Context';
-import ContextMenuModal, { DefaultContextMenuItem } from '@/components/modals/ContextMenuModal';
 import { ContextMenuItemType } from '@/commons/types';
-import { Node as ReactFlowNode, Edge as ReactFlowEdge } from 'reactflow';
+import ContextMenuModal from '@/components/modals/ContextMenuModal';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
+import { ModalContext } from '@/contexts/ModalContext';
+import useKeyboardListener from '@/hooks/useKeyboardListener';
+import useOnCloseIDE from '@/hooks/useOnCloseIDE';
+import useXForceReactFlow from '@/hooks/useXForceReactFlow';
+import { Edge as ReactFlowEdge, Node as ReactFlowNode } from 'reactflow';
+import LibraryPanel from './libraryPanel';
+import { CUSTOM_X_FORCE_NODES } from './libraryPanel/nodes/nodeTypes';
+import TopBar from './topBar';
 
 const AppX = () => {
   const {
@@ -38,6 +38,7 @@ const AppX = () => {
     onSave: { f: onSaveGraph, msg: <ToastMessageModal msg="Your changes successfully saved." /> }, // probably this is anti-pattern or there are better ways to handle / probably using emitters
   });
   const { setModal, setPoints } = React.useContext(ModalContext);
+
   React.useEffect(() => {
     restoreGraph();
     // eslint-disable-next-line react-hooks/exhaustive-deps

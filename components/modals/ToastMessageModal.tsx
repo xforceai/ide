@@ -1,4 +1,4 @@
-import { ModalContext } from '@/contexts/ModalContext/Context';
+import { ModalContext } from '@/contexts/ModalContext';
 import React from 'react';
 
 type ContextMenuModalPropsType = {

@@ -1,6 +1,6 @@
+import Node from '@/components/libTree/Node';
+import { TreeProps } from '@/components/libTree/types';
 import React from 'react';
-import Node from './Node';
-import { TreeProps } from './types';
 
 type BranchProps<T> = {
   item: TreeProps<T>['data'][number];

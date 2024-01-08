@@ -1,5 +1,5 @@
-import AppX from '@/components/App';
-import ModalContextProvider from '@/contexts/ModalContext/Provider';
+import AppX from '@/components/UI/App';
+import ModalContextProvider from '@/contexts/ModalContext';
 import React from 'react';
 import { ReactFlowProvider } from 'reactflow';
 

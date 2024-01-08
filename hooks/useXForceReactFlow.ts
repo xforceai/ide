@@ -1,21 +1,21 @@
+import { LOCAL_HISTORY_KEY } from '@/commons/constants';
+import { XForceNodesEnum, X_FORCE_NODES, extractNodeName } from '@/components/UI/libraryPanel/nodes/nodeTypes';
+import { ModalContext } from '@/contexts/ModalContext';
+import { includes } from 'lodash';
 import React from 'react';
 import {
   Connection,
   MarkerType,
+  Edge as ReactFlowEdge,
   ReactFlowInstance,
+  ReactFlowJsonObject,
+  Node as ReactFlowNode,
   ReactFlowProps,
   addEdge,
   useEdgesState,
   useNodesState,
-  Node as ReactFlowNode,
-  Edge as ReactFlowEdge,
   useReactFlow,
-  ReactFlowJsonObject,
 } from 'reactflow';
-import { includes } from 'lodash';
-import { XForceNodesEnum, X_FORCE_NODES, extractNodeName } from '@/components/nodes/nodeTypes';
-import { ModalContext } from '@/contexts/ModalContext/Context';
-import { LOCAL_HISTORY_KEY } from '@/commons/constants';
 
 type ReturnType = ReactFlowProps & {
   reactFlowRef: React.MutableRefObject<HTMLDivElement | null>;

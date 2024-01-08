@@ -1,10 +1,10 @@
+import CustomFunction from '@/components/UI/libraryPanel/nodes/autogen/CustomFunction';
+import GPTAssistantAgent from '@/components/UI/libraryPanel/nodes/autogen/GPTAssistantAgent';
+import GroupChat from '@/components/UI/libraryPanel/nodes/autogen/GroupChat';
+import UserProxy from '@/components/UI/libraryPanel/nodes/autogen/UserProxy';
+import OpenAI from '@/components/UI/libraryPanel/nodes/llm/OpenAI';
 import React from 'react';
-import UserProxy from './autogen/UserProxy';
-import GroupChat from './autogen/GroupChat';
-import { Edge as ReactFlowEdge, NodeProps, Node as ReactFlowNode } from 'reactflow';
-import GPTAssistantAgent from './autogen/GPTAssistantAgent';
-import CustomFunction from './autogen/CustomFunction';
-import OpenAI from '@/components/nodes/llm/OpenAI';
+import { NodeProps, Edge as ReactFlowEdge, Node as ReactFlowNode } from 'reactflow';
 
 export enum XForceNodesEnum {
   USER_PROXY = 'USER_PROXY',
@@ -18,7 +18,6 @@ export type XForceNodeDataType = {
     input: XForceNodesEnum[] | null;
     output: XForceNodesEnum[] | null;
   };
-  varName?: string;
 };
 export type XForceNodeType = Omit<ReactFlowNode<XForceNodeDataType>, 'position'>;
 
@@ -29,10 +28,9 @@ export const X_FORCE_NODES: { [k in XForceNodesEnum]: XForceNodeType } = {
     dragHandle: `.${XForceNodesEnum.GROUP_CHAT}`,
     data: {
       connectivity: {
-        input: [XForceNodesEnum.USER_PROXY, XForceNodesEnum.GPT_ASSISTANT_AGENT],
+        input: [XForceNodesEnum.USER_PROXY, XForceNodesEnum.GPT_ASSISTANT_AGENT, XForceNodesEnum.LLM_OPENAI],
         output: null,
       },
-      varName: 'group_chat',
     },
   },
   USER_PROXY: {
@@ -44,7 +42,6 @@ export const X_FORCE_NODES: { [k in XForceNodesEnum]: XForceNodeType } = {
         input: null,
         output: [XForceNodesEnum.GROUP_CHAT],
       },
-      varName: 'user_proxy',
     },
   },
   GPT_ASSISTANT_AGENT: {
@@ -53,10 +50,9 @@ export const X_FORCE_NODES: { [k in XForceNodesEnum]: XForceNodeType } = {
     dragHandle: `.${XForceNodesEnum.GPT_ASSISTANT_AGENT}`,
     data: {
       connectivity: {
-        input: [XForceNodesEnum.CUSTOM_FUNCTION],
+        input: [XForceNodesEnum.CUSTOM_FUNCTION, XForceNodesEnum.LLM_OPENAI],
         output: [XForceNodesEnum.GROUP_CHAT],
       },
-      varName: 'gpt_assistant',
     },
   },
   CUSTOM_FUNCTION: {
@@ -77,12 +73,12 @@ export const X_FORCE_NODES: { [k in XForceNodesEnum]: XForceNodeType } = {
     data: {
       connectivity: {
         input: null,
-        output: [XForceNodesEnum.GPT_ASSISTANT_AGENT],
+        output: [XForceNodesEnum.GPT_ASSISTANT_AGENT, XForceNodesEnum.GROUP_CHAT],
       },
     },
   },
 };
-export const CUSTOM_X_FORCE_NODES: { [k in XForceNodesEnum]: React.ComponentType<NodeProps> } = {
+export const CUSTOM_X_FORCE_NODES: { [_ in XForceNodesEnum]: React.ComponentType<NodeProps> } = {
   USER_PROXY: UserProxy,
   GROUP_CHAT: GroupChat,
   GPT_ASSISTANT_AGENT: GPTAssistantAgent,
@@ -117,13 +113,16 @@ export const NODE_TO_CODE_SCHEMA: { [k in XForceNodesEnum]: (params: any) => str
     maxRounds,
     agentSelection,
     agents,
+    configListVarName,
   }: {
     varName: string;
     maxRounds: number;
     agentSelection: string;
     agents: string[];
+    configListVarName: string;
   }) =>
-    `${varName} = autogen.GroupChat(agents=[${agents}], messages=[], max_round=${maxRounds}, agent_selection="${agentSelection}")`,
+    `${varName} = autogen.GroupChat(agents=[${agents}], messages=[], max_round=${maxRounds}, speaker_selection_method="${agentSelection}")
+${varName}_manager = autogen.GroupChatManager(groupchat=${varName}, llm_config = {"config_list": ${configListVarName}})`,
   USER_PROXY: ({ varName, systemMessage }: { varName: string; systemMessage: string }) =>
     `${varName} = UserProxyAgent(name="${varName}", human_input_mode="ALWAYS", max_consecutive_auto_reply=1, system_message="${systemMessage}")`,
   GPT_ASSISTANT_AGENT: ({
@@ -202,22 +201,49 @@ export const CODE_BUILDER = (nodes: ReactFlowNode[], edges: ReactFlowEdge[]) => 
     );
     codes.push(codeblock);
   });
+
   userProxies.forEach((el) => {
     m.set(el.id, el?.data?.varName);
     const key = el.type as keyof typeof XForceNodesEnum;
     const codeblock = NODE_TO_CODE_SCHEMA[key]?.(el.data || undefined);
     codes.push(codeblock);
   });
-  // group chat
+
   groupChats.forEach((el) => {
     m.set(el.id, el?.data?.varName);
 
     const agents = edges
-      .filter((e) => extractNodeName(e.target || '') === XForceNodesEnum.GROUP_CHAT)
+      .filter(
+        (e) =>
+          extractNodeName(e.source || '') !== XForceNodesEnum.LLM_OPENAI &&
+          extractNodeName(e.target || '') === XForceNodesEnum.GROUP_CHAT,
+      )
       .map((e) => m.get(e.source));
+
+    const connectedLLMConfig = edges.find(
+      (e) =>
+        extractNodeName(e.source || '') === XForceNodesEnum.LLM_OPENAI &&
+        extractNodeName(e.target || '') === XForceNodesEnum.GPT_ASSISTANT_AGENT,
+    );
+    const llmConfigVarName = m.get(connectedLLMConfig?.source);
     const key = el.type as keyof typeof XForceNodesEnum;
-    const codeblock = NODE_TO_CODE_SCHEMA[key]?.({ ...el.data, agents } || undefined);
+    const codeblock = NODE_TO_CODE_SCHEMA[key]?.(
+      { ...el.data, agents, configListVarName: llmConfigVarName } || undefined,
+    );
     codes.push(codeblock);
+  });
+
+  userProxies.forEach((el) => {
+    const connectedGCs = edges.filter(
+      (e) =>
+        extractNodeName(e.source || '') === XForceNodesEnum.USER_PROXY &&
+        extractNodeName(e.target || '') === XForceNodesEnum.GROUP_CHAT,
+    );
+    connectedGCs.forEach((gc) => {
+      const gcVarName = m.get(gc?.target);
+      const codeblock = `${el.data?.varName}.initiate_chat(${gcVarName}_manager,  message="${el?.data?.prompt}")`;
+      codes.push(codeblock);
+    });
   });
 
   // build code

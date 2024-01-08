@@ -2,7 +2,7 @@ import { LOCAL_HISTORY_KEY } from '@/commons/constants';
 import { isEqual } from 'lodash';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { ReactFlowJsonObject, Node as ReactFlowNode } from 'reactflow';
+import { ReactFlowJsonObject } from 'reactflow';
 
 type ArgsType = {
   maskedFlow: ReactFlowJsonObject<any, any> | null;
@@ -14,21 +14,23 @@ function useOnCloseIDE({ maskedFlow, callback }: ArgsType): void {
 
   const beforeUnload = React.useCallback(
     (e: BeforeUnloadEvent) => {
-      const hasLocalStorage = localStorage.getItem(LOCAL_HISTORY_KEY) !== null;
-      const hasChanges = maskedFlow !== null;
-      if (!hasLocalStorage && !hasChanges) return false;
-      if (!hasLocalStorage) {
-        e.preventDefault();
-        e.returnValue = true;
-        callback?.();
-        console.log('here');
-        return true;
-      }
-      const diff = !isEqual(JSON.parse(localStorage.getItem(LOCAL_HISTORY_KEY) || ''), maskedFlow || '');
-      if (diff || localStorage.getItem(LOCAL_HISTORY_KEY) == null) {
-        e.preventDefault();
-        e.returnValue = true;
-        callback?.();
+      try {
+        const XForceStore = localStorage.getItem(LOCAL_HISTORY_KEY);
+        const fullEmptyState = !XForceStore && !maskedFlow?.nodes.length;
+        if (fullEmptyState) return;
+        if (maskedFlow && XForceStore) {
+          const { nodes: storeNodes, edges: storeEdges } = JSON.parse(XForceStore);
+          const { nodes: stateNodes, edges: stateEdges } = maskedFlow;
+          const hasChanges =
+            !isEqual(JSON.stringify(storeNodes), JSON.stringify(stateNodes)) ||
+            !isEqual(JSON.stringify(storeEdges), JSON.stringify(stateEdges));
+          if (hasChanges) {
+            e.returnValue = hasChanges; // even if you assign false, this is still going to trigger, so we need to wrap it with if block.
+            callback?.();
+          }
+        }
+      } catch (err) {
+        // log
       }
     },
     [callback, maskedFlow],

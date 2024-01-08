@@ -1,7 +1,7 @@
-import React from 'react';
-import { ModalContext } from './Context';
-import ReactDOM from 'react-dom';
 import { MODAL_ROOT_DIV_ID, MODAL_Z_INDEX } from '@/commons/constants';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { ModalContext } from '../../contexts/ModalContext';
 
 const Modal: React.FC = () => {
   const [CONTAINER, SET_CONTAINER] = React.useState<Element | null>(null);

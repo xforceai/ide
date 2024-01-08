@@ -1,5 +1,5 @@
-import { XForceNodesEnum } from '@/components/nodes/nodeTypes';
-import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/nodes/skeleton';
+import { XForceNodesEnum } from '@/components/UI/libraryPanel/nodes/nodeTypes';
+import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
 import useNodeStore from '@/hooks/useNodeStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React, { memo } from 'react';
@@ -16,14 +16,14 @@ const GroupChat: React.FC<ReactFlowNodeProps> = (props) => {
 
   const onAgentNameChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
-      const val = evt.target.value;
+      const val = evt.target.value.trim();
       addData({ varName: val });
     },
     [addData],
   );
   const onMaxRoundsChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
-      const val = evt.target.value;
+      const val = evt.target.value.trim();
       addData({ maxRounds: parseInt(val) });
     },
     [addData],

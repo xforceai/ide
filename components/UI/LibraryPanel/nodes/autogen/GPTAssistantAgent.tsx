@@ -1,9 +1,9 @@
+import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
+import useNodeStore from '@/hooks/useNodeStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps } from 'reactflow';
 import { XForceNodesEnum } from '../nodeTypes';
-import useNodeStore from '@/hooks/useNodeStore';
-import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/nodes/skeleton';
 
 type GPTAssistantAgentNodeType = {
   varName: string;
@@ -16,14 +16,14 @@ const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
 
   const onAgentNameChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
-      const val = evt.target.value;
+      const val = evt.target.value.trim();
       addData({ varName: val });
     },
     [addData],
   );
   const onOAIIdChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
-      const val = evt.target.value;
+      const val = evt.target.value.trim();
       addData({ OAIId: val });
     },
     [addData],

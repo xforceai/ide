@@ -1,5 +1,4 @@
 import React from 'react';
-import { XForceNodeType } from '../nodes/nodeTypes';
 
 type DefaultDataProps<T> = {
   id: string;

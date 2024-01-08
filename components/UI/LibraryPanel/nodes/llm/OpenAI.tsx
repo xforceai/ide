@@ -1,9 +1,9 @@
+import { XForceNodesEnum } from '@/components/UI/libraryPanel/nodes/nodeTypes';
+import { DefaultContent, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
+import useNodeStore from '@/hooks/useNodeStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps } from 'reactflow';
-import useNodeStore from '@/hooks/useNodeStore';
-import { DefaultContent, ToolbarSkeleton } from '@/components/nodes/skeleton';
-import { XForceNodesEnum } from '@/components/nodes/nodeTypes';
 
 enum OAIModelsEnum {
   GPT_3_5_TURBO = 'gpt-3.5-turbo-1106',
@@ -31,7 +31,7 @@ const OpenAI: React.FC<ReactFlowNodeProps> = (props) => {
   );
   const onApiKeyChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
-      const val = evt.target.value;
+      const val = evt.target.value.trim();
       addData({ apiKey: val });
     },
     [addData],

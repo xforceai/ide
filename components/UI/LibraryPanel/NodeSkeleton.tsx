@@ -4,7 +4,7 @@ type TreeNodeProps = {
   name: string;
   content: React.JSX.Element;
 };
-export const NodeSkeleton: React.FC<TreeNodeProps> = ({ name, content }: TreeNodeProps) => {
+const NodeSkeleton: React.FC<TreeNodeProps> = ({ name, content }: TreeNodeProps) => {
   return (
     <div className="bg-white border border-gray-200 rounded-sm mt-2 w-60">
       <div className="bg-gray-100 border-b border-b-gray-200">
@@ -14,3 +14,4 @@ export const NodeSkeleton: React.FC<TreeNodeProps> = ({ name, content }: TreeNod
     </div>
   );
 };
+export default NodeSkeleton;
