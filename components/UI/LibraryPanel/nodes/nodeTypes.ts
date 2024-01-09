@@ -144,7 +144,7 @@ ${funcMap ? `${varName}.register_function(function_map=${funcMap || 'None'})` : 
     `openai_config_${i} = [{'model': '${model}', 'api_key': '${apiKey}'}]`,
 };
 export const CODE_BUILDER = (nodes: ReactFlowNode[], edges: ReactFlowEdge[]) => {
-  let codes: string[] = [];
+  const codes: string[] = [];
   const m = new Map();
 
   // nodes

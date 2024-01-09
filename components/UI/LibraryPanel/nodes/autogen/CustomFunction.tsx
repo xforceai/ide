@@ -1,24 +1,22 @@
 import { XForceNodesEnum } from '@/components/UI/libraryPanel/nodes/nodeTypes';
 import { DefaultContent, MethodHeaderSkeleton, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
-import useNodeStore from '@/hooks/useNodeStore';
+import useDnDStore from '@/stores/useDnDStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import AceEditor from 'react-ace';
-import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps } from 'reactflow';
+import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
 
 import 'ace-builds/src-noconflict/ext-language_tools';
-import 'ace-builds/src-noconflict/mode-java';
-
-type CustomFunctionNodeDataType = {
-  func: string;
-};
+import 'ace-builds/src-noconflict/mode-python';
 
 const CustomFunction: React.FC<ReactFlowNodeProps> = (props) => {
-  const { data, addData } = useNodeStore<CustomFunctionNodeDataType>(props);
+  const { addNodeData } = useDnDStore();
+  const { getNode } = useReactFlow();
   const [toolbarVisible, setToolbarVisible] = React.useState(false);
 
+  const data = getNode(props.id)?.data;
   const onCustomFuncChange = (code: string) => {
-    addData({ func: code });
+    addNodeData(props.id, { func: code });
   };
 
   return (
@@ -52,8 +50,8 @@ const CustomFunction: React.FC<ReactFlowNodeProps> = (props) => {
             mode={'python'}
             showPrintMargin={false}
             editorProps={{ $blockScrolling: true }}
+            value={data?.func || ''}
             onChange={onCustomFuncChange}
-            value={data?.func}
             tabSize={2}
             height="250px"
             width="350px"

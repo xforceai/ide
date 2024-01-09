@@ -1,32 +1,29 @@
 import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
-import useNodeStore from '@/hooks/useNodeStore';
+import useDnDStore from '@/stores/useDnDStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps } from 'reactflow';
+import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
 import { XForceNodesEnum } from '../nodeTypes';
 
-type UserProxyDataType = {
-  varName: string;
-  prompt: string;
-};
 const UserProxy: React.FC<ReactFlowNodeProps> = (props) => {
-  const { data, addData } = useNodeStore<UserProxyDataType>(props);
+  const { addNodeData } = useDnDStore();
+  const { getNode } = useReactFlow();
   const [toolbarVisible, setToolbarVisible] = React.useState(false);
 
+  const data = getNode(props.id)?.data;
   const onVarNameChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
       const val = evt.target.value.trim();
-      addData({ varName: val });
+      addNodeData(props.id, { varName: val });
     },
-    [addData],
+    [addNodeData, props.id],
   );
-
   const onPromptChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
       const val = evt.target.value;
-      addData({ prompt: val });
+      addNodeData(props.id, { prompt: val });
     },
-    [addData],
+    [addNodeData, props.id],
   );
 
   return (
@@ -61,8 +58,8 @@ const UserProxy: React.FC<ReactFlowNodeProps> = (props) => {
             type="text"
             placeholder="user_proxy"
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
+            value={data?.varName || ''}
             onChange={onVarNameChange}
-            value={data?.varName}
           />
         </div>
       </div>
@@ -73,8 +70,8 @@ const UserProxy: React.FC<ReactFlowNodeProps> = (props) => {
             type="text"
             placeholder="user_proxy"
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
+            value={data?.prompt || ''}
             onChange={onPromptChange}
-            value={data?.prompt}
           />
         </div>
       </div>

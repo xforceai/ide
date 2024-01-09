@@ -1,39 +1,36 @@
 import { XForceNodesEnum } from '@/components/UI/libraryPanel/nodes/nodeTypes';
 import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
-import useNodeStore from '@/hooks/useNodeStore';
+import useDnDStore from '@/stores/useDnDStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React, { memo } from 'react';
-import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps } from 'reactflow';
+import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
 
-type GroupChatDataType = {
-  varName: string;
-  maxRounds: number;
-  agentSelection: string;
-};
 const GroupChat: React.FC<ReactFlowNodeProps> = (props) => {
-  const { data, addData } = useNodeStore<GroupChatDataType>(props);
+  const { addNodeData } = useDnDStore();
+  const { getNode } = useReactFlow();
   const [toolbarVisible, setToolbarVisible] = React.useState(false);
+  const data = getNode(props.id)?.data;
 
   const onAgentNameChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
       const val = evt.target.value.trim();
-      addData({ varName: val });
+      addNodeData(props.id, { varName: val });
     },
-    [addData],
+    [addNodeData, props.id],
   );
   const onMaxRoundsChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
       const val = evt.target.value.trim();
-      addData({ maxRounds: parseInt(val) });
+      addNodeData(props.id, { maxRounds: parseInt(val) });
     },
-    [addData],
+    [addNodeData, props.id],
   );
   const onSpeakerSelectionChange = React.useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       const val = e.target.value;
-      addData({ agentSelection: val });
+      addNodeData(props.id, { agentSelection: val });
     },
-    [addData],
+    [addNodeData, props.id],
   );
 
   return (
@@ -66,7 +63,7 @@ const GroupChat: React.FC<ReactFlowNodeProps> = (props) => {
             type="text"
             placeholder="my_gc"
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
-            value={data?.varName}
+            value={data?.varName || ''}
             onChange={onAgentNameChange}
           />
         </div>
@@ -76,7 +73,7 @@ const GroupChat: React.FC<ReactFlowNodeProps> = (props) => {
             type="number"
             placeholder="15"
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
-            value={data?.maxRounds}
+            value={data?.maxRounds || ''}
             onChange={onMaxRoundsChange}
           />
         </div>
@@ -84,7 +81,7 @@ const GroupChat: React.FC<ReactFlowNodeProps> = (props) => {
           <div>Agent Selection</div>
           <select
             className="bg-gray-100 border border-gray-300 text-sm rounded-sm"
-            value={data?.agentSelection}
+            value={data?.agentSelection || ''}
             onChange={onSpeakerSelectionChange}
           >
             <option value={'auto'}>auto</option>

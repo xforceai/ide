@@ -1,9 +1,9 @@
 import { XForceNodesEnum } from '@/components/UI/libraryPanel/nodes/nodeTypes';
 import { DefaultContent, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
-import useNodeStore from '@/hooks/useNodeStore';
+import useDnDStore from '@/stores/useDnDStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps } from 'reactflow';
+import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
 
 enum OAIModelsEnum {
   GPT_3_5_TURBO = 'gpt-3.5-turbo-1106',
@@ -11,30 +11,26 @@ enum OAIModelsEnum {
   GPT_4 = 'gpt-4-0613',
   GPT_4_32K = 'gpt-4-32k-0613',
 }
-type OAIModelsType = (typeof OAIModelsEnum)[keyof typeof OAIModelsEnum];
-
-type OpenAIDataType = {
-  model: OAIModelsType;
-  apiKey: string;
-};
 
 const OpenAI: React.FC<ReactFlowNodeProps> = (props) => {
-  const { data, addData } = useNodeStore<OpenAIDataType>(props);
+  const { addNodeData } = useDnDStore();
+  const { getNode } = useReactFlow();
   const [toolbarVisible, setToolbarVisible] = React.useState(false);
 
+  const data = getNode(props.id)?.data;
   const onModelNameChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLSelectElement>) => {
       const val = evt.target.value as OAIModelsEnum;
-      addData({ model: val });
+      addNodeData(props.id, { model: val });
     },
-    [addData],
+    [addNodeData, props.id],
   );
   const onApiKeyChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
       const val = evt.target.value.trim();
-      addData({ apiKey: val });
+      addNodeData(props.id, { apiKey: val });
     },
-    [addData],
+    [addNodeData, props.id],
   );
   return (
     <div className="rounded-sm border border-gray-200 bg-white min-w-80">
@@ -63,8 +59,8 @@ const OpenAI: React.FC<ReactFlowNodeProps> = (props) => {
           <div>Model *</div>
           <select
             className="bg-gray-100 border border-gray-300 text-sm rounded-sm"
+            value={data?.model || ''}
             onChange={onModelNameChange}
-            value={data?.model}
           >
             <option value={OAIModelsEnum.GPT_3_5_TURBO}>gpt-3.5-turbo-1106</option>
             <option value={OAIModelsEnum.GPT_3_5_TURBO_16K}>gpt-3.5-turbo-16k</option>
@@ -77,8 +73,8 @@ const OpenAI: React.FC<ReactFlowNodeProps> = (props) => {
           <input
             type="text"
             placeholder="sk-***"
+            value={data?.apiKey || ''}
             onChange={onApiKeyChange}
-            value={data?.apiKey}
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
           />
         </div>

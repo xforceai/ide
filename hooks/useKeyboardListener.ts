@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 
 type ArgsType = {
   onSave?: {
-    f: () => any;
+    f: () => void;
     msg: ReactElement;
   };
 };

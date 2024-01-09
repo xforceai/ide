@@ -1,32 +1,30 @@
 import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
-import useNodeStore from '@/hooks/useNodeStore';
+import useDnDStore from '@/stores/useDnDStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps } from 'reactflow';
+import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
 import { XForceNodesEnum } from '../nodeTypes';
 
-type GPTAssistantAgentNodeType = {
-  varName: string;
-  OAIId: string;
-};
-
 const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
-  const { data, addData } = useNodeStore<GPTAssistantAgentNodeType>(props);
+  const { addNodeData } = useDnDStore();
+  const { getNode } = useReactFlow();
+
+  const data = getNode(props.id)?.data;
   const [toolbarVisible, setToolbarVisible] = React.useState(false);
 
   const onAgentNameChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
       const val = evt.target.value.trim();
-      addData({ varName: val });
+      addNodeData(props.id, { varName: val });
     },
-    [addData],
+    [addNodeData, props.id],
   );
   const onOAIIdChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
       const val = evt.target.value.trim();
-      addData({ OAIId: val });
+      addNodeData(props.id, { OAIId: val });
     },
-    [addData],
+    [addNodeData, props.id],
   );
 
   return (
@@ -61,7 +59,7 @@ const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
             type="text"
             placeholder="my_agent"
             onChange={onAgentNameChange}
-            value={data?.varName}
+            value={data?.varName || ''}
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
           />
         </div>
@@ -71,7 +69,7 @@ const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
             type="text"
             placeholder="asst_"
             onChange={onOAIIdChange}
-            value={data?.OAIId}
+            value={data?.OAIId || ''}
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
           />
         </div>
