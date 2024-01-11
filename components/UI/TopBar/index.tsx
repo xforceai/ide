@@ -1,4 +1,4 @@
-import { CODE_BUILDER } from '@/components/UI/libraryPanel/nodes/nodeTypes';
+import { CODE_BUILDER } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
 import { ModalContext } from '@/contexts/ModalContext';
 import { toPng } from 'html-to-image';
 import React from 'react';

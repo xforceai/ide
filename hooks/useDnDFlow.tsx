@@ -1,6 +1,6 @@
 import { DATA_TRANSFER_KEY, LOCAL_HISTORY_KEY } from '@/commons/constants';
 import { ContextMenuItemType } from '@/commons/types';
-import { XForceNodesEnum, X_FORCE_NODES, extractNodeName } from '@/components/UI/libraryPanel/nodes/nodeTypes';
+import { XForceNodesEnum, X_FORCE_NODES, extractNodeName } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
 import ContextMenuModal from '@/components/modals/ContextMenuModal';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
 import { ModalContext } from '@/contexts/ModalContext';

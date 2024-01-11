@@ -1,8 +1,8 @@
-import CustomFunction from '@/components/UI/libraryPanel/nodes/autogen/CustomFunction';
-import GPTAssistantAgent from '@/components/UI/libraryPanel/nodes/autogen/GPTAssistantAgent';
-import GroupChat from '@/components/UI/libraryPanel/nodes/autogen/GroupChat';
-import UserProxy from '@/components/UI/libraryPanel/nodes/autogen/UserProxy';
-import OpenAI from '@/components/UI/libraryPanel/nodes/llm/OpenAI';
+import CustomFunction from '@/components/UI/LibraryPanel/nodes/autogen/CustomFunction';
+import GPTAssistantAgent from '@/components/UI/LibraryPanel/nodes/autogen/GPTAssistantAgent';
+import GroupChat from '@/components/UI/LibraryPanel/nodes/autogen/GroupChat';
+import UserProxy from '@/components/UI/LibraryPanel/nodes/autogen/UserProxy';
+import OpenAI from '@/components/UI/LibraryPanel/nodes/llm/OpenAI';
 import React from 'react';
 import { NodeProps, Edge as ReactFlowEdge, Node as ReactFlowNode } from 'reactflow';
 

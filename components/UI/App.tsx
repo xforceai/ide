@@ -2,9 +2,9 @@ import React from 'react';
 import ReactFlow, { Background, Controls } from 'reactflow';
 
 import { DND_ID } from '@/commons/constants';
+import LibraryPanel from '@/components/UI/LibraryPanel';
+import { CUSTOM_X_FORCE_NODES } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
 import TopBar from '@/components/UI/TopBar';
-import LibraryPanel from '@/components/UI/libraryPanel';
-import { CUSTOM_X_FORCE_NODES } from '@/components/UI/libraryPanel/nodes/nodeTypes';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
 import { ModalContext } from '@/contexts/ModalContext';
 import useDnDFlow from '@/hooks/useDnDFlow';

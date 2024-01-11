@@ -1,5 +1,5 @@
-import { XForceNodesEnum } from '@/components/UI/libraryPanel/nodes/nodeTypes';
-import { DefaultContent, MethodHeaderSkeleton, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
+import { XForceNodesEnum } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
+import { DefaultContent, MethodHeaderSkeleton, ToolbarSkeleton } from '@/components/UI/LibraryPanel/nodes/skeleton';
 import { ValidatorContext } from '@/contexts/ValidatorContext';
 import useDnDStore from '@/stores/useDnDStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
