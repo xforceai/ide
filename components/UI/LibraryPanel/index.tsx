@@ -15,7 +15,7 @@ const LibraryPanel = () => {
     event.dataTransfer.effectAllowed = 'move';
   };
 
-  const treeData: TreeProps<{}>['data'] = [
+  const treeData: TreeProps<object>['data'] = [
     {
       id: 'n1',
       name: 'Configs',

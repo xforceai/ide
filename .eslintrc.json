@@ -4,6 +4,14 @@
   "plugins": ["@typescript-eslint"],
   "root": true,
   "rules": {
-    "no-console": "error"
+    "no-console": "error",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_",
+        "caughtErrorsIgnorePattern": "^_"
+      }
+    ]
   }
 }

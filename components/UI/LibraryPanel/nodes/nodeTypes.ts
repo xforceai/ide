@@ -107,6 +107,7 @@ load_dotenv()
 ${c}
 `;
 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const NODE_TO_CODE_SCHEMA: { [k in XForceNodesEnum]: (params: any) => string } = {
   GROUP_CHAT: ({
     varName,

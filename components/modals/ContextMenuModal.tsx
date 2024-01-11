@@ -8,7 +8,7 @@ type ContextMenuModalPropsType = {
 };
 const ContextMenuModal: React.FC<ContextMenuModalPropsType> = ({ menu }) => {
   const ref = React.useRef<HTMLDivElement>(null);
-  let { setModal } = React.useContext(ModalContext);
+  const { setModal } = React.useContext(ModalContext);
   React.useEffect(() => {
     const onClick = (_: MouseEvent) => {
       // TODO [P2]: if ref.current contains e.target, and if e.target have a child, don't close the modal
