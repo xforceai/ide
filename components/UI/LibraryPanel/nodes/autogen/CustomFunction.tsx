@@ -1,14 +1,16 @@
 import { XForceNodesEnum } from '@/components/UI/libraryPanel/nodes/nodeTypes';
 import { DefaultContent, MethodHeaderSkeleton, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
+import { ValidatorContext } from '@/contexts/ValidatorContext';
 import useDnDStore from '@/stores/useDnDStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import AceEditor from 'react-ace';
 import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
 
-import { ValidatorContext } from '@/contexts/ValidatorContext';
-import 'ace-builds/src-noconflict/ext-language_tools';
-import 'ace-builds/src-noconflict/mode-python';
+import { highlight, languages } from 'prismjs';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-python';
+import 'prismjs/themes/prism.css';
+import Editor from 'react-simple-code-editor';
 
 const CustomFunction: React.FC<ReactFlowNodeProps> = (props) => {
   const { errors } = React.useContext(ValidatorContext);
@@ -47,17 +49,18 @@ const CustomFunction: React.FC<ReactFlowNodeProps> = (props) => {
       </div>
       <div className="p-2 bg-gray-50">
         <div className="flex justify-between items-center pt-2">
-          <AceEditor
-            theme="twilight"
-            mode={'python'}
-            showPrintMargin={false}
-            editorProps={{ $blockScrolling: true }}
-            defaultValue=""
-            value={data?.func || ''}
-            onChange={onCustomFuncChange}
-            tabSize={2}
-            height="250px"
-            width="350px"
+          <Editor
+            value={data?.func}
+            placeholder="def my_custom_function(arg1, arg2):"
+            onValueChange={onCustomFuncChange}
+            highlight={(code) => highlight(code, languages.python, 'py')}
+            padding={10}
+            className="max-w-96 max-h-96 min-h-16 overflow-y-auto bg-white w-full"
+            style={{
+              fontFamily: '"Fira code", "Fira Mono", monospace',
+              fontSize: 12,
+            }}
+            textareaClassName="outline-none w-80"
           />
         </div>
         {errors?.[props.id]?.func && <span className="text-red-500 text-xs">{errors?.[props.id]?.func}</span>}
