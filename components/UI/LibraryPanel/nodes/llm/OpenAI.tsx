@@ -1,5 +1,6 @@
 import { XForceNodesEnum } from '@/components/UI/libraryPanel/nodes/nodeTypes';
 import { DefaultContent, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
+import { ValidatorContext } from '@/contexts/ValidatorContext';
 import useDnDStore from '@/stores/useDnDStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
@@ -13,6 +14,7 @@ enum OAIModelsEnum {
 }
 
 const OpenAI: React.FC<ReactFlowNodeProps> = (props) => {
+  const { errors } = React.useContext(ValidatorContext);
   const { addNodeData } = useDnDStore();
   const { getNode } = useReactFlow();
   const [toolbarVisible, setToolbarVisible] = React.useState(false);
@@ -33,7 +35,7 @@ const OpenAI: React.FC<ReactFlowNodeProps> = (props) => {
     [addNodeData, props.id],
   );
   return (
-    <div className="rounded-sm border border-gray-200 bg-white min-w-80">
+    <div className="rounded-sm border border-gray-200 bg-white w-80">
       <div className={`${XForceNodesEnum.LLM_OPENAI} flex justify-between items-center border-b border-gray-200 py-2`}>
         <div className="font-bold ml-2">OpenAI</div>
         <InformationCircleIcon
@@ -68,15 +70,20 @@ const OpenAI: React.FC<ReactFlowNodeProps> = (props) => {
             <option value={OAIModelsEnum.GPT_4_32K}>gpt-4-32k-0613</option>
           </select>
         </div>
-        <div className="flex justify-between items-center pt-2">
-          <div>API Key *</div>
-          <input
-            type="text"
-            placeholder="sk-***"
-            value={data?.apiKey || ''}
-            onChange={onApiKeyChange}
-            className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
-          />
+        {errors?.[props.id]?.func && <span className="text-red-500 text-xs">{errors?.[props.id]?.func}</span>}
+        <div className="p-2 bg-gray-50 pt-2">
+          <div className="flex justify-between items-center pt-2">
+            <div>API Key *</div>
+            <input
+              type="text"
+              placeholder="sk-***"
+              defaultValue=""
+              value={data?.apiKey || ''}
+              onChange={onApiKeyChange}
+              className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
+            />
+          </div>
+          {errors?.[props.id]?.apiKey && <span className="text-red-500 text-xs">{errors?.[props.id]?.apiKey}</span>}
         </div>
       </div>
       <Handle type="source" position={Position.Bottom} className="rounded-none border-none w-16" />

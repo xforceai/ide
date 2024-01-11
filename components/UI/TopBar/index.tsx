@@ -7,6 +7,7 @@ import { getRectOfNodes, getTransformForBounds, useReactFlow } from 'reactflow';
 import { ContextMenuItemType } from '@/commons/types';
 import ContextMenuModal from '@/components/modals/ContextMenuModal';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
+import { ValidatorContext } from '@/contexts/ValidatorContext';
 import useDnDStore from '@/stores/useDnDStore';
 
 type MenuItemProps = React.HTMLProps<HTMLDivElement> & {
@@ -30,8 +31,10 @@ const TopBar: React.FC = () => {
   const { setModal, setPoints } = React.useContext(ModalContext);
   const { getNodes, getEdges } = useReactFlow();
   const { nodes, clearGraph } = useDnDStore();
+  const { validate } = React.useContext(ValidatorContext);
 
   const onClickExportAsPython = () => {
+    validate(nodes);
     const element = document.createElement('a');
     const file = new Blob([CODE_BUILDER(getNodes(), getEdges())], { type: 'text/plain' });
 

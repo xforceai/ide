@@ -1,11 +1,13 @@
 import { XForceNodesEnum } from '@/components/UI/libraryPanel/nodes/nodeTypes';
 import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
+import { ValidatorContext } from '@/contexts/ValidatorContext';
 import useDnDStore from '@/stores/useDnDStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React, { memo } from 'react';
 import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
 
 const GroupChat: React.FC<ReactFlowNodeProps> = (props) => {
+  const { errors } = React.useContext(ValidatorContext);
   const { addNodeData } = useDnDStore();
   const { getNode } = useReactFlow();
   const [toolbarVisible, setToolbarVisible] = React.useState(false);
@@ -14,7 +16,7 @@ const GroupChat: React.FC<ReactFlowNodeProps> = (props) => {
   const onAgentNameChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
       const val = evt.target.value.trim();
-      addNodeData(props.id, { varName: val });
+      addNodeData(props.id, { variableName: val });
     },
     [addNodeData, props.id],
   );
@@ -34,7 +36,7 @@ const GroupChat: React.FC<ReactFlowNodeProps> = (props) => {
   );
 
   return (
-    <div className="rounded-sm border border-gray-200 bg-white min-w-80">
+    <div className="rounded-sm border border-gray-200 bg-white w-80">
       <div className={`${XForceNodesEnum.GROUP_CHAT} flex justify-between items-center border-b border-gray-200 py-2`}>
         <div className="font-bold ml-2">GroupChat</div>
         <InformationCircleIcon
@@ -63,20 +65,26 @@ const GroupChat: React.FC<ReactFlowNodeProps> = (props) => {
             type="text"
             placeholder="my_gc"
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
-            value={data?.varName || ''}
+            defaultValue=""
+            value={data?.variableName || ''}
             onChange={onAgentNameChange}
           />
         </div>
+        {errors?.[props.id]?.variableName && (
+          <span className="text-red-500 text-xs">{errors?.[props.id]?.variableName}</span>
+        )}
         <div className="flex justify-between items-center pt-2">
           <div>Max Rounds</div>
           <input
             type="number"
             placeholder="15"
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
+            defaultValue=""
             value={data?.maxRounds || ''}
             onChange={onMaxRoundsChange}
           />
         </div>
+        {errors?.[props.id]?.maxRounds && <span className="text-red-500 text-xs">{errors?.[props.id]?.maxRounds}</span>}
         <div className="flex justify-between items-center pt-2">
           <div>Agent Selection</div>
           <select
@@ -90,6 +98,9 @@ const GroupChat: React.FC<ReactFlowNodeProps> = (props) => {
             <option value={'round robin'}>round robin</option>
           </select>
         </div>
+        {errors?.[props.id]?.agentSelection && (
+          <span className="text-red-500 text-xs">{errors?.[props.id]?.agentSelection}</span>
+        )}
       </div>
       <Handle type="target" position={Position.Top} className="rounded-none border-none w-16 h-1" />
     </div>
