@@ -53,7 +53,7 @@ const CustomFunction: React.FC<ReactFlowNodeProps> = (props) => {
             value={data?.func}
             placeholder="def my_custom_function(arg1, arg2):"
             onValueChange={onCustomFuncChange}
-            highlight={(code) => highlight(code, languages.python, 'py')}
+            highlight={(code) => highlight(code || '', languages.python, 'py')}
             padding={10}
             className="max-w-96 max-h-96 min-h-16 overflow-y-auto bg-white w-full"
             style={{

@@ -20,7 +20,7 @@ function Node<T>(props: NodeProps<T>): React.JSX.Element {
       {hasComponent ? (
         props.item.jsxElement
       ) : (
-        <p className="font-bold uppercase">
+        <p className="font-bold uppercase cursor-pointer">
           <span className="pr-2">{hasChild ? (props.isExpanded ? '▾ ' : '▸ ') : ''}</span>
           {props.item.name}
         </p>

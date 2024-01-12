@@ -102,6 +102,7 @@ const LibraryPanel = () => {
     {
       id: 'n3',
       name: 'Tools',
+      initiallyExpanded: true,
       children: [
         {
           id: 'n1',

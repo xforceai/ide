@@ -34,7 +34,11 @@ const TopBar: React.FC = () => {
   const { validate } = React.useContext(ValidatorContext);
 
   const onClickExportAsPython = () => {
-    validate(nodes);
+    const isValid = validate(nodes);
+    if (!isValid) {
+      return;
+    }
+
     const element = document.createElement('a');
     const file = new Blob([CODE_BUILDER(getNodes(), getEdges())], { type: 'text/plain' });
 
@@ -100,7 +104,8 @@ const TopBar: React.FC = () => {
           <MenuItem name="File" onClick={onClickFile} />
         </div>
         <div className="flex">
-          <MenuItem name="About" />
+          <MenuItem name="Docs" />
+          <MenuItem name="About" className="ml-2" />
           <MenuItem name="Mission" className="ml-2" />
           <MenuItem name="Contribute" className="ml-2" />
         </div>

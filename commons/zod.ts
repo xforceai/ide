@@ -38,7 +38,9 @@ const CustomFunction = z.object({
 });
 
 const LLMOpenAI = z.object({
-  variableName: VariableName,
+  model: z
+    .enum(['gpt-3.5-turbo-1106', 'gpt-3.5-turbo-16k', 'gpt-4-0613', 'gpt-4-32k-0613'])
+    .default('gpt-3.5-turbo-1106'),
   apiKey: z.string().optional(),
 });
 

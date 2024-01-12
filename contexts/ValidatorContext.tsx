@@ -12,12 +12,12 @@ type ErrorObjType = {
 
 type ValidatorContextType = {
   errors: ErrorObjType;
-  validate: (nds: Node[]) => void;
+  validate: (nds: Node[]) => boolean;
 };
 
 export const ValidatorContext = React.createContext<ValidatorContextType>({
   errors: {},
-  validate: () => null,
+  validate: () => false,
 });
 
 type ModalContextProviderProps = {

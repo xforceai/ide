@@ -6,7 +6,7 @@ import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
 
-enum OAIModelsEnum {
+export enum OAIModelsEnum {
   GPT_3_5_TURBO = 'gpt-3.5-turbo-1106',
   GPT_3_5_TURBO_16K = 'gpt-3.5-turbo-16k',
   GPT_4 = 'gpt-4-0613',
@@ -73,7 +73,7 @@ const OpenAI: React.FC<ReactFlowNodeProps> = (props) => {
         {errors?.[props.id]?.func && <span className="text-red-500 text-xs">{errors?.[props.id]?.func}</span>}
         <div className="p-2 bg-gray-50 pt-2">
           <div className="flex justify-between items-center pt-2">
-            <div>API Key *</div>
+            <div>API Key</div>
             <input
               type="text"
               placeholder="sk-***"
