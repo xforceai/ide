@@ -104,10 +104,18 @@ const TopBar: React.FC = () => {
           <MenuItem name="File" onClick={onClickFile} />
         </div>
         <div className="flex">
-          <MenuItem name="Docs" />
-          <MenuItem name="About" className="ml-2" />
+          <MenuItem
+            name="Docs"
+            onClick={() =>
+              window.open(
+                'https://x-force.notion.site/Introduction-to-X-Force-IDE-b92c434802de4df6a58c83fd5d292c33?pvs=4',
+                '_blank',
+              )
+            }
+          />
+          {/* <MenuItem name="About" className="ml-2" />
           <MenuItem name="Mission" className="ml-2" />
-          <MenuItem name="Contribute" className="ml-2" />
+          <MenuItem name="Contribute" className="ml-2" /> */}
         </div>
       </div>
     </div>
