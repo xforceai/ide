@@ -74,8 +74,10 @@ const LibraryPanel = () => {
               name="UserProxy"
               content={
                 <div className="text-sm">
-                  <span className="bg-gray-100 px-1 text-gray-700 rounded-sm mr-1 font-semibold">GroupChat</span>
-                  <span>is a subclass of ConversableAgent configured with a default system message.</span>
+                  <span className="bg-gray-100 px-1 text-gray-700 rounded-sm mr-1 font-semibold">UserProxy</span>
+                  <span>
+                    acts as a mediator between the agent workforce and the user, facilitating feedback communication.
+                  </span>
                 </div>
               }
             />
@@ -90,8 +92,13 @@ const LibraryPanel = () => {
               name="GPTAssistantAgent"
               content={
                 <div className="text-sm">
-                  <span className="bg-gray-100 px-1 text-gray-700 rounded-sm mr-1 font-semibold">GroupChat</span>
-                  <span>is a subclass of ConversableAgent configured with a default system message.</span>
+                  <span className="bg-gray-100 px-1 text-gray-700 rounded-sm mr-1 font-semibold">
+                    GPTAssistantAgent
+                  </span>
+                  <span>
+                    built on OpenAI’s assistant API, enables the integration of any OpenAI Assistant into your
+                    workforce.
+                  </span>
                 </div>
               }
             />
@@ -113,8 +120,11 @@ const LibraryPanel = () => {
               name="CustomFunction"
               content={
                 <div className="text-sm">
-                  <span className="bg-gray-100 px-1 text-gray-700 rounded-sm mr-1 font-semibold">GroupChat</span>
-                  <span>is a subclass of ConversableAgent configured with a default system message.</span>
+                  <span className="bg-gray-100 px-1 text-gray-700 rounded-sm mr-1 font-semibold">CustomFunction</span>
+                  <span>
+                    allows you to add your own functions to GPTAssistantAgent to enhance them with specific
+                    functionalities.
+                  </span>
                 </div>
               }
             />
