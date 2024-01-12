@@ -9,7 +9,7 @@
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true,
+      "source.fixAll.eslint": "explicit",
       "source.organizeImports": "always"
     },
     "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
@@ -19,6 +19,6 @@
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "minimal",
     "typescript.updateImportsOnFileMove.enabled": "always",
-    "cSpell.words": ["esbenp", "nextjs", "OPENAI", "reactflow", "zustand"]
+    "cSpell.words": ["esbenp", "nextjs", "OPENAI", "partialize", "reactflow", "zustand"]
   }
 }

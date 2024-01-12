@@ -1,89 +1,38 @@
 import React from 'react';
 import ReactFlow, { Background, Controls } from 'reactflow';
 
-import { ContextMenuItemType } from '@/commons/types';
-import ContextMenuModal from '@/components/modals/ContextMenuModal';
+import { DND_ID } from '@/commons/constants';
+import LibraryPanel from '@/components/UI/LibraryPanel';
+import { CUSTOM_X_FORCE_NODES } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
+import TopBar from '@/components/UI/TopBar';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
 import { ModalContext } from '@/contexts/ModalContext';
+import useDnDFlow from '@/hooks/useDnDFlow';
 import useKeyboardListener from '@/hooks/useKeyboardListener';
-import useOnCloseIDE from '@/hooks/useOnCloseIDE';
-import useXForceReactFlow from '@/hooks/useXForceReactFlow';
-import { Edge as ReactFlowEdge, Node as ReactFlowNode } from 'reactflow';
-import LibraryPanel from './libraryPanel';
-import { CUSTOM_X_FORCE_NODES } from './libraryPanel/nodes/nodeTypes';
-import TopBar from './topBar';
+import useDnDStore from '@/stores/useDnDStore';
 
 const AppX = () => {
+  const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onInit } = useDnDStore();
   const {
-    reactFlowRef,
-    nodes,
-    onNodesChange,
-    edges,
-    onEdgesChange,
-    onConnect,
-    onDrop,
-    onDragOver,
+    onNodeDragOver,
+    onNodeDropToWorkstation,
     isValidConnection,
-    onInit,
-    onMove,
+    onNodeContextMenu,
+    onEdgeContextMenu,
     onSaveGraph,
-    restoreGraph,
-    setNodes,
-    setEdges,
-    onNewGraph,
-    maskedFlow,
-  } = useXForceReactFlow();
-  useOnCloseIDE({ maskedFlow });
+  } = useDnDFlow();
+  const { setModal } = React.useContext(ModalContext);
+
   useKeyboardListener({
-    onSave: { f: onSaveGraph, msg: <ToastMessageModal msg="Your changes successfully saved." /> }, // probably this is anti-pattern or there are better ways to handle / probably using emitters
+    onSave: { f: onSaveGraph, msg: <ToastMessageModal msg="Your changes automatically saved." /> },
   });
-  const { setModal, setPoints } = React.useContext(ModalContext);
-
-  React.useEffect(() => {
-    restoreGraph();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const onDeleteNode = React.useCallback(
-    (node: ReactFlowNode) => {
-      setNodes((nodes) => nodes.filter((n) => n.id !== node.id));
-      setEdges((edges) => edges.filter((e) => e.source !== node.id));
-    },
-    [setNodes, setEdges],
-  );
-
-  const onDeleteEdge = React.useCallback(
-    (edge: ReactFlowEdge) => {
-      setEdges((edges) => edges.filter((e) => e.id !== edge.id));
-    },
-    [setEdges],
-  );
-
-  const onNodeContextMenu = React.useCallback(
-    (event: React.MouseEvent, node: ReactFlowNode) => {
-      const CTX_MENU__NODE: ContextMenuItemType[] = [{ item: 'Delete Node', onClick: () => onDeleteNode(node) }];
-      setPoints({ left: event.pageX, top: event.pageY });
-      setModal(<ContextMenuModal menu={CTX_MENU__NODE} />);
-    },
-    [onDeleteNode, setModal, setPoints],
-  );
-
-  const onEdgeContextMenu = React.useCallback(
-    (event: React.MouseEvent, edge: ReactFlowEdge) => {
-      setPoints({ left: event.pageX, top: event.pageY });
-      const CTX_MENU__EDGE: ContextMenuItemType[] = [{ item: 'Delete Edge', onClick: () => onDeleteEdge(edge) }];
-      setModal(<ContextMenuModal menu={CTX_MENU__EDGE} />);
-    },
-    [onDeleteEdge, setModal, setPoints],
-  );
 
   return (
     <div className="flex h-screen">
       <LibraryPanel />
       <div className="flex-grow">
-        <TopBar onSaveGraph={onSaveGraph} onNewGraph={onNewGraph} onRestore={restoreGraph} />
+        <TopBar />
         <ReactFlow
-          ref={reactFlowRef}
           nodes={nodes}
           edges={edges}
           nodeTypes={CUSTOM_X_FORCE_NODES}
@@ -91,13 +40,13 @@ const AppX = () => {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           onInit={onInit}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
+          onDrop={onNodeDropToWorkstation}
+          onDragOver={onNodeDragOver}
           isValidConnection={isValidConnection}
           onNodeContextMenu={onNodeContextMenu}
           onEdgeContextMenu={onEdgeContextMenu}
-          onMoveStart={onMove}
-          className="XForceIDE"
+          onMoveStart={() => setModal(null)}
+          className={DND_ID}
           attributionPosition="bottom-left"
         >
           <Controls />

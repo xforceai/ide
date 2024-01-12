@@ -1,32 +1,31 @@
-import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
-import useNodeStore from '@/hooks/useNodeStore';
+import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/UI/LibraryPanel/nodes/skeleton';
+import { ValidatorContext } from '@/contexts/ValidatorContext';
+import useDnDStore from '@/stores/useDnDStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps } from 'reactflow';
+import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
 import { XForceNodesEnum } from '../nodeTypes';
 
-type UserProxyDataType = {
-  varName: string;
-  prompt: string;
-};
 const UserProxy: React.FC<ReactFlowNodeProps> = (props) => {
-  const { data, addData } = useNodeStore<UserProxyDataType>(props);
+  const { errors } = React.useContext(ValidatorContext);
+  const { addNodeData } = useDnDStore();
+  const { getNode } = useReactFlow();
   const [toolbarVisible, setToolbarVisible] = React.useState(false);
 
+  const data = getNode(props.id)?.data;
   const onVarNameChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
       const val = evt.target.value.trim();
-      addData({ varName: val });
+      addNodeData(props.id, { variableName: val });
     },
-    [addData],
+    [addNodeData, props.id],
   );
-
   const onPromptChange = React.useCallback(
     (evt: React.ChangeEvent<HTMLInputElement>) => {
       const val = evt.target.value;
-      addData({ prompt: val });
+      addNodeData(props.id, { initialPrompt: val });
     },
-    [addData],
+    [addNodeData, props.id],
   );
 
   return (
@@ -56,27 +55,35 @@ const UserProxy: React.FC<ReactFlowNodeProps> = (props) => {
       </div>
       <div className="p-2 bg-gray-50">
         <div className="flex justify-between items-center">
-          <div>Agent Name</div>
+          <div>Agent Name *</div>
           <input
             type="text"
             placeholder="user_proxy"
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
+            defaultValue=""
+            value={data?.variableName || ''}
             onChange={onVarNameChange}
-            value={data?.varName}
           />
         </div>
+        {errors?.[props.id]?.variableName && (
+          <span className="text-red-500 text-xs">{errors?.[props.id]?.variableName}</span>
+        )}
       </div>
       <div className="p-2 bg-gray-50 pt-2">
         <div className="flex justify-between items-center">
-          <div>Initial Prompt</div>
+          <div>Initial Prompt *</div>
           <input
             type="text"
-            placeholder="user_proxy"
+            placeholder="Do a research about how..."
             className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
+            defaultValue=""
+            value={data?.initialPrompt || ''}
             onChange={onPromptChange}
-            value={data?.prompt}
           />
         </div>
+        {errors?.[props.id]?.initialPrompt && (
+          <span className="text-red-500 text-xs">{errors?.[props.id]?.initialPrompt}</span>
+        )}
       </div>
       <Handle type="source" position={Position.Bottom} className="rounded-none border-none w-16" />
     </div>

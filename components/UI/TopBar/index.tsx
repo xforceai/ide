@@ -1,4 +1,4 @@
-import { CODE_BUILDER } from '@/components/UI/libraryPanel/nodes/nodeTypes';
+import { CODE_BUILDER } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
 import { ModalContext } from '@/contexts/ModalContext';
 import { toPng } from 'html-to-image';
 import React from 'react';
@@ -7,6 +7,8 @@ import { getRectOfNodes, getTransformForBounds, useReactFlow } from 'reactflow';
 import { ContextMenuItemType } from '@/commons/types';
 import ContextMenuModal from '@/components/modals/ContextMenuModal';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
+import { ValidatorContext } from '@/contexts/ValidatorContext';
+import useDnDStore from '@/stores/useDnDStore';
 
 type MenuItemProps = React.HTMLProps<HTMLDivElement> & {
   name: string;
@@ -22,20 +24,21 @@ const MenuItem: React.FC<MenuItemProps> = (props: MenuItemProps) => {
   );
 };
 
-type Props = {
-  onSaveGraph: () => boolean;
-  onNewGraph: () => boolean;
-  onRestore: () => void;
-};
-
 const imageWidth = 1024;
 const imageHeight = 768;
 
-const TopBar: React.FC<Props> = ({ onSaveGraph, onNewGraph, onRestore }: Props) => {
+const TopBar: React.FC = () => {
   const { setModal, setPoints } = React.useContext(ModalContext);
   const { getNodes, getEdges } = useReactFlow();
+  const { nodes, clearGraph } = useDnDStore();
+  const { validate } = React.useContext(ValidatorContext);
 
   const onClickExportAsPython = () => {
+    const isValid = validate(nodes);
+    if (!isValid) {
+      return;
+    }
+
     const element = document.createElement('a');
     const file = new Blob([CODE_BUILDER(getNodes(), getEdges())], { type: 'text/plain' });
 
@@ -66,16 +69,19 @@ const TopBar: React.FC<Props> = ({ onSaveGraph, onNewGraph, onRestore }: Props) 
   };
 
   const onSave = () => {
-    const res = onSaveGraph();
-    if (res) {
-      setModal(<ToastMessageModal msg="Changes saved." />);
-      setPoints({ bottom: 44, right: 44 });
+    setModal(<ToastMessageModal msg="Your changes are automatically saved." />);
+    setPoints({ bottom: 44, right: 44 });
+  };
+  const onClearGraph = () => {
+    if (nodes) {
+      if (confirm('Your changes will be destroyed, are you sure you want to create new workstation?')) {
+        clearGraph();
+      }
     }
   };
   const CTX_MENU__FILE: ContextMenuItemType[] = [
-    { item: 'New', onClick: onNewGraph },
+    { item: 'New', onClick: onClearGraph },
     { item: 'Save', onClick: onSave },
-    { item: 'Restore previous graph...', onClick: onRestore },
     {
       item: 'Export As',
       subs: [
@@ -98,7 +104,8 @@ const TopBar: React.FC<Props> = ({ onSaveGraph, onNewGraph, onRestore }: Props) 
           <MenuItem name="File" onClick={onClickFile} />
         </div>
         <div className="flex">
-          <MenuItem name="About" />
+          <MenuItem name="Docs" />
+          <MenuItem name="About" className="ml-2" />
           <MenuItem name="Mission" className="ml-2" />
           <MenuItem name="Contribute" className="ml-2" />
         </div>

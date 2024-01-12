@@ -1,8 +1,8 @@
-import CustomFunction from '@/components/UI/libraryPanel/nodes/autogen/CustomFunction';
-import GPTAssistantAgent from '@/components/UI/libraryPanel/nodes/autogen/GPTAssistantAgent';
-import GroupChat from '@/components/UI/libraryPanel/nodes/autogen/GroupChat';
-import UserProxy from '@/components/UI/libraryPanel/nodes/autogen/UserProxy';
-import OpenAI from '@/components/UI/libraryPanel/nodes/llm/OpenAI';
+import CustomFunction from '@/components/UI/LibraryPanel/nodes/autogen/CustomFunction';
+import GPTAssistantAgent from '@/components/UI/LibraryPanel/nodes/autogen/GPTAssistantAgent';
+import GroupChat from '@/components/UI/LibraryPanel/nodes/autogen/GroupChat';
+import UserProxy from '@/components/UI/LibraryPanel/nodes/autogen/UserProxy';
+import OpenAI from '@/components/UI/LibraryPanel/nodes/llm/OpenAI';
 import React from 'react';
 import { NodeProps, Edge as ReactFlowEdge, Node as ReactFlowNode } from 'reactflow';
 
@@ -107,44 +107,47 @@ load_dotenv()
 ${c}
 `;
 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const NODE_TO_CODE_SCHEMA: { [k in XForceNodesEnum]: (params: any) => string } = {
   GROUP_CHAT: ({
-    varName,
+    variableName,
     maxRounds,
     agentSelection,
     agents,
     configListVarName,
   }: {
-    varName: string;
+    variableName: string;
     maxRounds: number;
     agentSelection: string;
     agents: string[];
     configListVarName: string;
   }) =>
-    `${varName} = autogen.GroupChat(agents=[${agents}], messages=[], max_round=${maxRounds}, speaker_selection_method="${agentSelection}")
-${varName}_manager = autogen.GroupChatManager(groupchat=${varName}, llm_config = {"config_list": ${configListVarName}})`,
-  USER_PROXY: ({ varName, systemMessage }: { varName: string; systemMessage: string }) =>
-    `${varName} = UserProxyAgent(name="${varName}", human_input_mode="ALWAYS", max_consecutive_auto_reply=1, system_message="${systemMessage}")`,
+    `${variableName} = autogen.GroupChat(agents=[${agents}], messages=[], max_round=${
+      maxRounds || 15
+    }, speaker_selection_method="${agentSelection || 'auto'}")
+${variableName}_manager = autogen.GroupChatManager(groupchat=${variableName}, llm_config = {"config_list": ${configListVarName}})`,
+  USER_PROXY: ({ variableName }: { variableName: string }) =>
+    `${variableName} = UserProxyAgent(name="${variableName}", human_input_mode="ALWAYS", max_consecutive_auto_reply=1)`,
   GPT_ASSISTANT_AGENT: ({
-    varName,
+    variableName,
     OAIId,
     funcMap,
     configListVarName,
   }: {
-    varName: string;
+    variableName: string;
     OAIId: string;
     configListVarName: string;
     funcMap?: string;
-  }) => `${varName} = GPTAssistantAgent(name="${varName}", llm_config = {"config_list": ${
+  }) => `${variableName} = GPTAssistantAgent(name="${variableName}", llm_config = {"config_list": ${
     configListVarName || 'None'
   }, "assistant_id":"${OAIId}"})
-${funcMap ? `${varName}.register_function(function_map=${funcMap || 'None'})` : ''}`,
+${funcMap ? `${variableName}.register_function(function_map=${funcMap || 'None'})` : ''}`,
   CUSTOM_FUNCTION: ({ func }: { func: string }) => `${func || ''}`,
   LLM_OPENAI: ({ i, model, apiKey }: { i: number; model: string; apiKey: string }) =>
-    `openai_config_${i} = [{'model': '${model}', 'api_key': '${apiKey}'}]`,
+    `openai_config_${i} = [{'model': '${model}', 'api_key': '${apiKey || '<please fill here with your api key>'}'}]`,
 };
 export const CODE_BUILDER = (nodes: ReactFlowNode[], edges: ReactFlowEdge[]) => {
-  let codes: string[] = [];
+  const codes: string[] = [];
   const m = new Map();
 
   // nodes
@@ -176,7 +179,7 @@ export const CODE_BUILDER = (nodes: ReactFlowNode[], edges: ReactFlowEdge[]) => 
   });
 
   gptAssistants.forEach((el) => {
-    m.set(el.id, el?.data?.varName);
+    m.set(el.id, el?.data?.variableName);
     const key = el.type as keyof typeof XForceNodesEnum;
     const connectedFuncNames = edges
       .filter(
@@ -203,14 +206,14 @@ export const CODE_BUILDER = (nodes: ReactFlowNode[], edges: ReactFlowEdge[]) => 
   });
 
   userProxies.forEach((el) => {
-    m.set(el.id, el?.data?.varName);
+    m.set(el.id, el?.data?.variableName);
     const key = el.type as keyof typeof XForceNodesEnum;
     const codeblock = NODE_TO_CODE_SCHEMA[key]?.(el.data || undefined);
     codes.push(codeblock);
   });
 
   groupChats.forEach((el) => {
-    m.set(el.id, el?.data?.varName);
+    m.set(el.id, el?.data?.variableName);
 
     const agents = edges
       .filter(
@@ -241,7 +244,7 @@ export const CODE_BUILDER = (nodes: ReactFlowNode[], edges: ReactFlowEdge[]) => 
     );
     connectedGCs.forEach((gc) => {
       const gcVarName = m.get(gc?.target);
-      const codeblock = `${el.data?.varName}.initiate_chat(${gcVarName}_manager,  message="${el?.data?.prompt}")`;
+      const codeblock = `${el.data?.variableName}.initiate_chat(${gcVarName}_manager,  message="${el?.data?.initialPrompt}")`;
       codes.push(codeblock);
     });
   });

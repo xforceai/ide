@@ -1,5 +1,5 @@
-import NodeSkeleton from '@/components/UI/libraryPanel/NodeSkeleton';
-import { XForceNodeType, X_FORCE_NODES } from '@/components/UI/libraryPanel/nodes/nodeTypes';
+import NodeSkeleton from '@/components/UI/LibraryPanel/NodeSkeleton';
+import { XForceNodeType, X_FORCE_NODES } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
 import Tree from '@/components/libTree/Tree';
 import { TreeProps } from '@/components/libTree/types';
 import Image from 'next/image';
@@ -15,7 +15,7 @@ const LibraryPanel = () => {
     event.dataTransfer.effectAllowed = 'move';
   };
 
-  const treeData: TreeProps<{}>['data'] = [
+  const treeData: TreeProps<object>['data'] = [
     {
       id: 'n1',
       name: 'Configs',
@@ -102,6 +102,7 @@ const LibraryPanel = () => {
     {
       id: 'n3',
       name: 'Tools',
+      initiallyExpanded: true,
       children: [
         {
           id: 'n1',

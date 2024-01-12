@@ -1,28 +1,30 @@
-import { XForceNodesEnum } from '@/components/UI/libraryPanel/nodes/nodeTypes';
-import { DefaultContent, MethodHeaderSkeleton, ToolbarSkeleton } from '@/components/UI/libraryPanel/nodes/skeleton';
-import useNodeStore from '@/hooks/useNodeStore';
+import { XForceNodesEnum } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
+import { DefaultContent, MethodHeaderSkeleton, ToolbarSkeleton } from '@/components/UI/LibraryPanel/nodes/skeleton';
+import { ValidatorContext } from '@/contexts/ValidatorContext';
+import useDnDStore from '@/stores/useDnDStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import AceEditor from 'react-ace';
-import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps } from 'reactflow';
+import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
 
-import 'ace-builds/src-noconflict/ext-language_tools';
-import 'ace-builds/src-noconflict/mode-java';
-
-type CustomFunctionNodeDataType = {
-  func: string;
-};
+import { highlight, languages } from 'prismjs';
+import 'prismjs/components/prism-clike';
+import 'prismjs/components/prism-python';
+import 'prismjs/themes/prism.css';
+import Editor from 'react-simple-code-editor';
 
 const CustomFunction: React.FC<ReactFlowNodeProps> = (props) => {
-  const { data, addData } = useNodeStore<CustomFunctionNodeDataType>(props);
+  const { errors } = React.useContext(ValidatorContext);
+  const { addNodeData } = useDnDStore();
+  const { getNode } = useReactFlow();
   const [toolbarVisible, setToolbarVisible] = React.useState(false);
 
+  const data = getNode(props.id)?.data;
   const onCustomFuncChange = (code: string) => {
-    addData({ func: code });
+    addNodeData(props.id, { func: code });
   };
 
   return (
-    <div className="nowheel rounded-sm border border-gray-200 bg-white min-w-80">
+    <div className="nowheel rounded-sm border border-gray-200 bg-white w-80">
       <div
         className={`${XForceNodesEnum.CUSTOM_FUNCTION} flex justify-between items-center border-b border-gray-200 py-2`}
       >
@@ -47,18 +49,21 @@ const CustomFunction: React.FC<ReactFlowNodeProps> = (props) => {
       </div>
       <div className="p-2 bg-gray-50">
         <div className="flex justify-between items-center pt-2">
-          <AceEditor
-            theme="twilight"
-            mode={'python'}
-            showPrintMargin={false}
-            editorProps={{ $blockScrolling: true }}
-            onChange={onCustomFuncChange}
+          <Editor
             value={data?.func}
-            tabSize={2}
-            height="250px"
-            width="350px"
+            placeholder="def my_custom_function(arg1, arg2):"
+            onValueChange={onCustomFuncChange}
+            highlight={(code) => highlight(code || '', languages.python, 'py')}
+            padding={10}
+            className="max-w-96 max-h-96 min-h-16 overflow-y-auto bg-white w-full"
+            style={{
+              fontFamily: '"Fira code", "Fira Mono", monospace',
+              fontSize: 12,
+            }}
+            textareaClassName="outline-none w-80"
           />
         </div>
+        {errors?.[props.id]?.func && <span className="text-red-500 text-xs">{errors?.[props.id]?.func}</span>}
       </div>
       <Handle type="source" position={Position.Bottom} className="rounded-none border-none w-16 h-1" />
     </div>
