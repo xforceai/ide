@@ -1,4 +1,5 @@
 import { GETTING_STARTED_GUIDE_URL } from '@/commons/constants';
+import useDnDStore from '@/stores/useDnDStore';
 import Image from 'next/image';
 import React from 'react';
 
@@ -15,7 +16,13 @@ const WelcomePanelButton: React.FC<WelcomePanelButtonProps> = (props) => {
   );
 };
 const WelcomePanel = () => {
+  const { nodes } = useDnDStore();
   const [panelVisible, setPanelVisible] = React.useState(true);
+  const [domLoaded, setDomLoaded] = React.useState(false);
+
+  React.useEffect(() => {
+    setDomLoaded(true);
+  }, []);
 
   const onNodeDragOver: React.DragEventHandler<HTMLDivElement> = React.useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
@@ -31,6 +38,7 @@ const WelcomePanel = () => {
   };
 
   if (!panelVisible) return <></>;
+  if (domLoaded && nodes.length) return <></>;
   return (
     <div
       className="flex w-[calc(100vw-320px)] justify-center items-center top-0 mt-11 h-[calc(100vh-44px)] absolute px-12 xl:px-64 z-10"

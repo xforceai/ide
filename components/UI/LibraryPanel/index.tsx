@@ -135,7 +135,7 @@ const LibraryPanel = () => {
   ];
 
   return (
-    <div className="bg-gray-50 border-r border-r-gray-20 w-80">
+    <div className="bg-gray-50 border-r border-r-gray-20 w-80 overflow-auto pb-12 ">
       <div className="border-b border-b-gray-200 h-11">
         <div className="pl-4 pt-2">
           <Image priority src={'/x-force.svg'} width={56} height={25} alt="software 2.0" />
