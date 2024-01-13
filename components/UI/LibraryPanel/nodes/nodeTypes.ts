@@ -144,7 +144,9 @@ ${variableName}_manager = autogen.GroupChatManager(groupchat=${variableName}, ll
 ${funcMap ? `${variableName}.register_function(function_map=${funcMap || 'None'})` : ''}`,
   CUSTOM_FUNCTION: ({ func }: { func: string }) => `${func || ''}`,
   LLM_OPENAI: ({ i, model, apiKey }: { i: number; model: string; apiKey: string }) =>
-    `openai_config_${i} = [{'model': '${model}', 'api_key': '${apiKey || '<please fill here with your api key>'}'}]`,
+    `openai_config_${i} = [{'model': '${model || 'gpt-3.5-turbo-1106'}', 'api_key': '${
+      apiKey || '<please fill here with your api key>'
+    }'}]`,
 };
 export const CODE_BUILDER = (nodes: ReactFlowNode[], edges: ReactFlowEdge[]) => {
   const codes: string[] = [];

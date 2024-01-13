@@ -108,7 +108,7 @@ const useDnDStore = create<RFState>()(
     }),
     {
       name: LOCAL_HISTORY_KEY,
-      storage: createJSONStorage(() => sessionStorage),
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => {
         const maskedNodeData = state.nodes.map((n) => {
           if (n.type === XForceNodesEnum.LLM_OPENAI) {

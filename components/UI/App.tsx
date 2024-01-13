@@ -5,6 +5,7 @@ import { DND_ID } from '@/commons/constants';
 import LibraryPanel from '@/components/UI/LibraryPanel';
 import { CUSTOM_X_FORCE_NODES } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
 import TopBar from '@/components/UI/TopBar';
+import WelcomePanel from '@/components/UI/WelcomePanel';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
 import { ModalContext } from '@/contexts/ModalContext';
 import useDnDFlow from '@/hooks/useDnDFlow';
@@ -32,6 +33,7 @@ const AppX = () => {
       <LibraryPanel />
       <div className="flex-grow">
         <TopBar />
+        <WelcomePanel />
         <ReactFlow
           nodes={nodes}
           edges={edges}
