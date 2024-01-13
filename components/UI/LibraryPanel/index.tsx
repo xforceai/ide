@@ -143,6 +143,12 @@ const LibraryPanel = () => {
       </div>
       <div className="p-4">
         <p className="uppercase font-bold">Library</p>
+        <p className="text-sm text-gray-500 bg-white p-2 border mt-2 rounded-sm">
+          <p className="font-bold text-gray-700">Information</p> &lsquo;Library&rsquo; includes a list of nodes that you
+          can add to the workstation (the panel on the right). You can simply drag and drop them into the workstation,
+          connect them together, assign them a task, and export the entire configuration as a Python file to run on your
+          local machine!
+        </p>
         <Tree data={treeData} />
       </div>
       {process.env.NEXT_PUBLIC_VERSION_NUMBER && (

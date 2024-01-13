@@ -105,7 +105,7 @@ const TopBar: React.FC = () => {
         </div>
         <div className="flex">
           <MenuItem
-            name="Docs"
+            name="Getting Started"
             onClick={() =>
               window.open(
                 'https://x-force.notion.site/Introduction-to-X-Force-IDE-b92c434802de4df6a58c83fd5d292c33?pvs=4',
