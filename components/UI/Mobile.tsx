@@ -7,7 +7,7 @@ type WelcomePanelButtonProps = React.HTMLProps<HTMLDivElement> & {
 };
 const WelcomePanelButton: React.FC<WelcomePanelButtonProps> = (props) => {
   return (
-    <div {...props}>
+    <div {...props} className="whitespace-nowrap">
       <div className="bg-gray-100 border border-gray-300 rounded skew-x-12 cursor-pointer hover:bg-gray-200 hover:border-gray-400 inline-block">
         <p className="-skew-x-12 pr-8 pl-2 text-gray-700 font-medium text-sm">{props.name}</p>
       </div>
@@ -20,10 +20,10 @@ const MobilePanel = () => {
   };
 
   return (
-    <div className="flex justify-center top-0 mt-11 h-[calc(100vh-44px)] absolute px-12 xl:px-64 z-10">
+    <div className="flex justify-center top-0 mt-11 h-[calc(100vh-44px)] absolute px-12 xl:px-64 z-10 pb-12">
       <div>
         <div className="flex flex-col items-center justify-center">
-          <Image priority src={'/x-force-ide.svg'} width={217} height={69} alt="software 2.0" />
+          <Image priority src={'/x-force-ide.svg'} width={217} height={69} alt="software 2.0" quality={100} />
           <p className="text-bold text-2xl pt-6 text-center">
             Create task specific agent workforces for your custom business logic using diagrams.
           </p>
@@ -47,12 +47,12 @@ const MobilePanel = () => {
             Learn more about X-Force at <span className="text-blue-500 cursor-pointer underline">x-force.ai/about</span>
             ! */}
           </p>
-          <Image priority src={'/demo.gif'} width={700} height={500} alt={'software 2.0 demo'} />
+          <Image priority src={'/demo.gif'} width={700} height={500} alt={'software 2.0 demo'} quality={100} />
         </div>
         <div className="flex flex-col pt-12">
           <div className="flex items-center">
             <WelcomePanelButton
-              name={'Start a new project'}
+              name={'Start a new project asdfasdfasf asfasdf asfa asdfasd'}
               onClick={() => alert("Currently we're not supporting mobile runs, please enter with your computer!")}
             />
             <p className="text-xs pl-2">(you need to start with a computer!)</p>
