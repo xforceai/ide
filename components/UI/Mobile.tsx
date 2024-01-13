@@ -55,7 +55,15 @@ const MobilePanel = () => {
             Learn more about X-Force at <span className="text-blue-500 cursor-pointer underline">x-force.ai/about</span>
             ! */}
           </p>
-          <Image priority src={'/demo.gif'} width={700} height={500} alt={'software 2.0 demo'} quality={100} />
+          <Image
+            priority
+            src={'/demo.gif'}
+            width={700}
+            height={500}
+            alt={'software 2.0 demo'}
+            quality={100}
+            className="pt-6"
+          />
         </div>
         <div className="flex flex-col py-12">
           <div className="flex items-center">
