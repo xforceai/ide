@@ -37,7 +37,7 @@ const WelcomePanel = () => {
     window.open(GETTING_STARTED_GUIDE_URL, '_blank');
   };
 
-  if (!panelVisible) return <></>;
+  if (!panelVisible || !domLoaded) return <></>;
   if (domLoaded && nodes.length) return <></>;
   return (
     <div
