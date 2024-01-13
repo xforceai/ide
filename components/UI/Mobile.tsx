@@ -23,7 +23,15 @@ const MobilePanel = () => {
     <div className="flex justify-center top-0 mt-11 h-[calc(100vh-44px)] absolute px-12 xl:px-64 z-10">
       <div>
         <div className="flex flex-col items-center justify-center">
-          <Image priority src={'/x-force-ide.svg'} width={217} height={69} alt="software 2.0" quality={100} />
+          <Image
+            priority
+            src={'/x-force-ide.svg'}
+            width={150}
+            height={69}
+            alt="software 2.0"
+            quality={100}
+            unoptimized
+          />
           <p className="text-bold text-2xl pt-6 text-center">
             Create task specific agent workforces for your custom business logic using diagrams.
           </p>
