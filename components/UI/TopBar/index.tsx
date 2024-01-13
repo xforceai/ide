@@ -4,7 +4,7 @@ import { toPng } from 'html-to-image';
 import React from 'react';
 import { getRectOfNodes, getTransformForBounds, useReactFlow } from 'reactflow';
 
-import { ABOUT_X_FORCE_URL, GETTING_STARTED_GUIDE_URL } from '@/commons/constants';
+import { GETTING_STARTED_GUIDE_URL } from '@/commons/constants';
 import { ContextMenuItemType } from '@/commons/types';
 import ContextMenuModal from '@/components/modals/ContextMenuModal';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
@@ -106,7 +106,7 @@ const TopBar: React.FC = () => {
         </div>
         <div className="flex">
           <MenuItem name="Getting Started" onClick={() => window.open(GETTING_STARTED_GUIDE_URL, '_blank')} />
-          <MenuItem name="About X-Force" className="ml-2" onClick={() => window.open(ABOUT_X_FORCE_URL, '_blank')} />
+          {/* <MenuItem name="About X-Force" className="ml-2" onClick={() => window.open(ABOUT_X_FORCE_URL, '_blank')} /> */}
           {/* <MenuItem name="Mission" className="ml-2" />
           <MenuItem name="Contribute" className="ml-2" /> */}
         </div>

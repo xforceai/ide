@@ -14,44 +14,29 @@ const WelcomePanelButton: React.FC<WelcomePanelButtonProps> = (props) => {
     </div>
   );
 };
-const WelcomePanel = () => {
-  const [panelVisible, setPanelVisible] = React.useState(true);
-
-  const onNodeDragOver: React.DragEventHandler<HTMLDivElement> = React.useCallback(
-    (event: React.DragEvent<HTMLDivElement>) => {
-      event.preventDefault();
-      setPanelVisible(false);
-    },
-    [],
-  );
-
-  const onClickNewProject = () => setPanelVisible(false);
+const MobilePanel = () => {
   const onClickGettingStartedGuide = () => {
     window.open(GETTING_STARTED_GUIDE_URL, '_blank');
   };
 
-  if (!panelVisible) return <></>;
   return (
-    <div
-      className="flex w-[calc(100vw-320px)] justify-center items-center top-0 mt-11 h-[calc(100vh-44px)] absolute px-12 xl:px-64 z-10"
-      onDragEnterCapture={onNodeDragOver}
-    >
+    <div className="flex justify-center top-0 mt-11 h-[calc(100vh-44px)] absolute px-12 xl:px-64 z-10">
       <div>
-        <div className="flex flex-col items-center justify-center opacity-60">
+        <div className="flex flex-col items-center justify-center">
           <Image priority src={'/x-force-ide.svg'} width={217} height={69} alt="software 2.0" />
-          <p className="text-bold text-2xl pt-6">
+          <p className="text-bold text-2xl pt-6 text-center">
             Create task specific agent workforces for your custom business logic using diagrams.
           </p>
-          <p className="font-medium pt-12 whitespace-pre-line">
-            You can drag and drop agents from the &quot;Library&quot; to here, connect them whatever you like, give them
-            an initial task, export them as a Python Script and run it on your local machine.
+          <p className="font-normal pt-12 whitespace-pre-line text-center">
+            You can drag and drop agents from the &quot;Library&quot;, connect them whatever you like, give them an
+            initial task, export them as a Python Script and run it on your local machine.
             {'\n\n'}
             To learn more, follow our{' '}
             <span className="text-blue-500 cursor-pointer underline" onClick={onClickGettingStartedGuide}>
               Getting Started
             </span>{' '}
             guide.
-            {'\n\n\n'}
+            {'\n\n'}
             We support enterprises by providing them Cloud Runs with our operating system build to run LLMs. Contact us
             to learn more{' '}
             <a className="text-blue-500 cursor-pointer underline" href="mailto:enterprise-support@x-force.ai">
@@ -63,8 +48,14 @@ const WelcomePanel = () => {
             ! */}
           </p>
         </div>
-        <div className="flex flex-col pt-12 opacity-75">
-          <WelcomePanelButton name={'New Project'} onClick={onClickNewProject} />
+        <div className="flex flex-col pt-12">
+          <div className="flex items-center">
+            <WelcomePanelButton
+              name={'Start a new project'}
+              onClick={() => alert("Currently we're not supporting mobile runs, please enter with your computer!")}
+            />
+            <p className="text-xs pl-2">(you need to start with a computer!)</p>
+          </div>
           <WelcomePanelButton name={'Getting Started Guide'} className="pt-1" onClick={onClickGettingStartedGuide} />
         </div>
       </div>
@@ -72,4 +63,4 @@ const WelcomePanel = () => {
   );
 };
 
-export default WelcomePanel;
+export default MobilePanel;
