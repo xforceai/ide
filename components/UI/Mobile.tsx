@@ -25,7 +25,7 @@ const MobilePanel = () => {
         <div className="flex flex-col items-center justify-center">
           <Image
             priority
-            src={'/x-force-ide.svg'}
+            src={'/x-forceIDE.png'}
             width={150}
             height={69}
             alt="software 2.0"
