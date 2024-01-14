@@ -23,7 +23,7 @@ const AgentSelectionEnum = z.enum(['auto', 'manual', 'random', 'round robin']);
 const GroupChat = z.object({
   variableName: VariableName,
   maxRounds: z.number().optional(),
-  agentSelection: AgentSelectionEnum.default('auto'), // TODO: add enum
+  agentSelection: AgentSelectionEnum.default('auto'),
 });
 
 const GPTAssistantAgent = z.object({

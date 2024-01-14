@@ -1,5 +1,5 @@
 import { LOCAL_HISTORY_KEY } from '@/commons/constants';
-import { XForceNodesEnum } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
+import { XForceNodesEnum } from '@/components/LibraryPanel/nodes/nodeTypes';
 import {
   Connection,
   Edge,

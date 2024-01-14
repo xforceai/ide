@@ -1,17 +1,18 @@
-import NodeSkeleton from '@/components/UI/LibraryPanel/NodeSkeleton';
-import { XForceNodeType, X_FORCE_NODES } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
-import Tree from '@/components/libTree/Tree';
-import { TreeProps } from '@/components/libTree/types';
+import { DATA_TRANSFER_KEY } from '@/commons/constants';
+import Tree from '@/components/LibTree/Tree';
+import { TreeProps } from '@/components/LibTree/types';
+import NodeSkeleton from '@/components/LibraryPanel/NodeSkeleton';
+import { XForceNodeType, X_FORCE_NODES } from '@/components/LibraryPanel/nodes/nodeTypes';
 import Image from 'next/image';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-export const PANEL_WIDTH = 320;
+export const PANEL_WIDTH = 320; // w-80 in tailwind
 
 const LibraryPanel = () => {
   const onDragStart = (event: React.DragEvent, node: XForceNodeType) => {
     const newNode = { ...node, id: `${node.id}__${uuidv4()}` };
-    event.dataTransfer.setData('application/reactflow', JSON.stringify(newNode));
+    event.dataTransfer.setData(DATA_TRANSFER_KEY, JSON.stringify(newNode));
     event.dataTransfer.effectAllowed = 'move';
   };
 

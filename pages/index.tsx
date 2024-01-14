@@ -11,17 +11,19 @@ const IDE = () => {
   };
   return (
     <>
-      <div className="block xl:hidden lg:hidden md:hidden whitespace-pre-line">
-        <MobilePanel />
+      <div className="hidden sm:block">
+        <div onContextMenu={disableDefaultContextMenu} className="hidden xl:block lg:block md:block">
+          <ValidatorContextProvider>
+            <ModalContextProvider>
+              <ReactFlowProvider>
+                <AppX />
+              </ReactFlowProvider>
+            </ModalContextProvider>
+          </ValidatorContextProvider>
+        </div>
       </div>
-      <div onContextMenu={disableDefaultContextMenu} className="hidden xl:block lg:block md:block">
-        <ValidatorContextProvider>
-          <ModalContextProvider>
-            <ReactFlowProvider>
-              <AppX />
-            </ReactFlowProvider>
-          </ModalContextProvider>
-        </ValidatorContextProvider>
+      <div className="block md:hidden">
+        <MobilePanel />
       </div>
     </>
   );

@@ -72,7 +72,7 @@ const ValidatorContextProvider = ({ children }: ModalContextProviderProps) => {
   React.useEffect(() => {
     const filteredNodes = nodes.filter((node) => nds?.find((n) => n.id === node.id));
     if (prev && !_.isEqual(_getZodData(filteredNodes), prev)) {
-      // after first submission, now validate onChange.
+      // after first submission, now validate the nodes has been validated in onChange event.
       validate(filteredNodes);
     }
   }, [_getZodData, nds, nodes, prev, validate]);

@@ -1,10 +1,11 @@
 import { DATA_TRANSFER_KEY, LOCAL_HISTORY_KEY } from '@/commons/constants';
 import { ContextMenuItemType } from '@/commons/types';
-import { XForceNodesEnum, X_FORCE_NODES, extractNodeName } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
-import ContextMenuModal from '@/components/modals/ContextMenuModal';
+import { XForceNodesEnum, X_FORCE_NODES } from '@/components/LibraryPanel/nodes/nodeTypes';
+import ContextMenuModal from '@/components/modals/ContextMenu/ContextMenuModal';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
 import { ModalContext } from '@/contexts/ModalContext';
 import useDnDStore from '@/stores/useDnDStore';
+import { extractNodeName } from '@/utils/nodeUtils';
 import { includes } from 'lodash';
 import React from 'react';
 import { Connection, Edge, Node, ReactFlowJsonObject, ReactFlowProps } from 'reactflow';

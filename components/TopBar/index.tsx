@@ -1,4 +1,4 @@
-import { CODE_BUILDER } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
+import { CODE_BUILDER } from '@/components/LibraryPanel/nodes/nodeTypes';
 import { ModalContext } from '@/contexts/ModalContext';
 import { toPng } from 'html-to-image';
 import React from 'react';
@@ -6,7 +6,7 @@ import { getRectOfNodes, getTransformForBounds, useReactFlow } from 'reactflow';
 
 import { GETTING_STARTED_GUIDE_URL } from '@/commons/constants';
 import { ContextMenuItemType } from '@/commons/types';
-import ContextMenuModal from '@/components/modals/ContextMenuModal';
+import ContextMenuModal from '@/components/modals/ContextMenu/ContextMenuModal';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
 import { ValidatorContext } from '@/contexts/ValidatorContext';
 import useDnDStore from '@/stores/useDnDStore';
@@ -25,8 +25,8 @@ const MenuItem: React.FC<MenuItemProps> = (props: MenuItemProps) => {
   );
 };
 
-const imageWidth = 1024;
-const imageHeight = 768;
+const IMAGE_WIDTH = 1024;
+const IMAGE_HEIGHT = 768;
 
 const TopBar: React.FC = () => {
   const { setModal, setPoints } = React.useContext(ModalContext);
@@ -50,13 +50,13 @@ const TopBar: React.FC = () => {
   };
   const onClickExportAsPNG = async () => {
     const nodesBounds = getRectOfNodes(getNodes());
-    const transform = getTransformForBounds(nodesBounds, imageWidth, imageHeight, 0.5, 2);
+    const transform = getTransformForBounds(nodesBounds, IMAGE_WIDTH, IMAGE_HEIGHT, 0.5, 2);
     const viewport = document.querySelector('.react-flow__viewport');
     if (!viewport) return null;
     const png = await toPng(viewport as HTMLElement, {
       backgroundColor: '#fff',
-      width: imageWidth,
-      height: imageHeight,
+      width: IMAGE_WIDTH,
+      height: IMAGE_HEIGHT,
       style: {
         width: '1024',
         height: '768',

@@ -3,10 +3,10 @@ import useDnDStore from '@/stores/useDnDStore';
 import Image from 'next/image';
 import React from 'react';
 
-type WelcomePanelButtonProps = React.HTMLProps<HTMLDivElement> & {
+type ButtonProps = React.HTMLProps<HTMLDivElement> & {
   name: string;
 };
-const WelcomePanelButton: React.FC<WelcomePanelButtonProps> = (props) => {
+const Button: React.FC<ButtonProps> = (props) => {
   return (
     <div {...props}>
       <div className="bg-gray-100 border border-gray-300 rounded skew-x-12 cursor-pointer hover:bg-gray-200 hover:border-gray-400 inline-block">
@@ -15,7 +15,7 @@ const WelcomePanelButton: React.FC<WelcomePanelButtonProps> = (props) => {
     </div>
   );
 };
-const WelcomePanel = () => {
+const EmptyWorkstation = () => {
   const { nodes } = useDnDStore();
   const [panelVisible, setPanelVisible] = React.useState(true);
   const [domLoaded, setDomLoaded] = React.useState(false);
@@ -72,12 +72,12 @@ const WelcomePanel = () => {
           </p>
         </div>
         <div className="flex flex-col pt-12 opacity-75">
-          <WelcomePanelButton name={'New Project'} onClick={onClickNewProject} />
-          <WelcomePanelButton name={'Getting Started Guide'} className="pt-1" onClick={onClickGettingStartedGuide} />
+          <Button name={'New Project'} onClick={onClickNewProject} />
+          <Button name={'Getting Started Guide'} className="pt-1" onClick={onClickGettingStartedGuide} />
         </div>
       </div>
     </div>
   );
 };
 
-export default WelcomePanel;
+export default EmptyWorkstation;
