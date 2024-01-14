@@ -1,4 +1,3 @@
-import { CODE_BUILDER } from '@/components/LibraryPanel/nodes/nodeTypes';
 import { ModalContext } from '@/contexts/ModalContext';
 import { toPng } from 'html-to-image';
 import React from 'react';
@@ -10,6 +9,7 @@ import ContextMenuModal from '@/components/modals/ContextMenu/ContextMenuModal';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
 import { ValidatorContext } from '@/contexts/ValidatorContext';
 import useDnDStore from '@/stores/useDnDStore';
+import { CODE_BUILDER } from '@/transpiler/primitive';
 
 type MenuItemProps = React.HTMLProps<HTMLDivElement> & {
   name: string;

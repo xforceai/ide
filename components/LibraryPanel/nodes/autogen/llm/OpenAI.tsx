@@ -83,7 +83,12 @@ const OpenAI: React.FC<ReactFlowNodeProps> = (props) => {
               className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
             />
           </div>
-          {errors?.[props.id]?.apiKey && <span className="text-red-500 text-xs">{errors?.[props.id]?.apiKey}</span>}
+          <p className="text-xs pt-2 text-gray-500">
+            X-Force does not store your API key neither on the cloud or on your local.
+          </p>
+          {errors?.[props.id]?.apiKey && (
+            <span className="text-red-500 text-xs pt-2">{errors?.[props.id]?.apiKey}</span>
+          )}
         </div>
       </div>
       <Handle type="source" position={Position.Bottom} className="rounded-none border-none w-16" />

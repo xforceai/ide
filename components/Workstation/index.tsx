@@ -42,11 +42,12 @@ const EmptyWorkstation = () => {
   return (
     <div
       className="flex w-[calc(100vw-320px)] justify-center items-center top-0 mt-11 h-[calc(100vh-44px)] absolute px-12 xl:px-64 z-10"
+      draggable={false}
       onDragEnterCapture={onNodeDragOver}
     >
       <div>
         <div className="flex flex-col items-center justify-center opacity-60">
-          <Image priority src={'/x-force-ide.svg'} width={217} height={69} alt="software 2.0" />
+          <Image priority src={'/x-force-ide.svg'} width={217} height={69} alt="software 2.0" draggable={false} />
           <p className="text-bold text-2xl pt-6">
             Create task specific agent workforces for your custom business logic using diagrams.
           </p>
@@ -62,7 +63,11 @@ const EmptyWorkstation = () => {
             {'\n\n\n'}
             We support enterprises by providing them Cloud Runs with our operating system build to run LLMs. Contact us
             to learn more{' '}
-            <a className="text-blue-500 cursor-pointer underline" href="mailto:enterprise-support@x-force.ai">
+            <a
+              className="text-blue-500 cursor-pointer underline"
+              href="mailto:enterprise-support@x-force.ai"
+              draggable={false}
+            >
               enterprise-support@x-force.ai
             </a>
             .
