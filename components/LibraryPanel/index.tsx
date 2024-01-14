@@ -1,17 +1,20 @@
-import NodeSkeleton from '@/components/UI/LibraryPanel/NodeSkeleton';
-import { XForceNodeType, X_FORCE_NODES } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
-import Tree from '@/components/libTree/Tree';
-import { TreeProps } from '@/components/libTree/types';
+import { DATA_TRANSFER_KEY, GETTING_STARTED_GUIDE_URL } from '@/commons/constants';
+import Tree from '@/components/LibTree/Tree';
+import { TreeProps } from '@/components/LibTree/types';
+import NodeSkeleton from '@/components/LibraryPanel/NodeSkeleton';
+import { XForceNodeType, X_FORCE_NODES } from '@/components/LibraryPanel/nodes/nodeTypes';
 import Image from 'next/image';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-export const PANEL_WIDTH = 320;
+export const PANEL_WIDTH = 320; // w-80 in tailwind
 
 const LibraryPanel = () => {
+  const [informationVisible, setInformationVisible] = React.useState(true);
+
   const onDragStart = (event: React.DragEvent, node: XForceNodeType) => {
     const newNode = { ...node, id: `${node.id}__${uuidv4()}` };
-    event.dataTransfer.setData('application/reactflow', JSON.stringify(newNode));
+    event.dataTransfer.setData(DATA_TRANSFER_KEY, JSON.stringify(newNode));
     event.dataTransfer.effectAllowed = 'move';
   };
 
@@ -143,12 +146,27 @@ const LibraryPanel = () => {
       </div>
       <div className="p-4">
         <p className="uppercase font-bold">Library</p>
-        <div className="text-sm text-gray-500 bg-white p-2 border mt-2 rounded-sm">
-          <p className="font-bold text-gray-700">Information</p> &lsquo;Library&rsquo; includes a list of nodes that you
-          can add to the workstation (the panel on the right). You can simply drag and drop them into the workstation,
-          connect them together, assign them a task, and export the entire configuration as a Python file to run on your
-          local machine!
-        </div>
+        {informationVisible && (
+          <div className="text-sm text-gray-500 bg-white p-2 border mt-2 rounded-sm">
+            <div className="pb-4">
+              <p className="font-bold text-gray-700 pb-2">Tip</p>&apos;Library&apos; includes a list of nodes that you
+              can add to the workstation (the panel on the right). You can simply drag and drop them into the
+              workstation.
+            </div>
+            <Image priority src={'/demo-short.gif'} width={260} height={175} alt="software 2.0" quality={100} />
+            <div className="flex justify-between pt-4">
+              <p className="text-blue-500 font-semibold cursor-pointer" onClick={() => setInformationVisible(false)}>
+                I understand!
+              </p>
+              <p
+                className="text-gray-700 font-semibold cursor-pointer"
+                onClick={() => window.open(GETTING_STARTED_GUIDE_URL, '_blank')}
+              >
+                Learn more...
+              </p>
+            </div>
+          </div>
+        )}
         <Tree data={treeData} />
       </div>
       {process.env.NEXT_PUBLIC_VERSION_NUMBER && (
@@ -163,3 +181,4 @@ const LibraryPanel = () => {
 };
 
 export default LibraryPanel;
+//

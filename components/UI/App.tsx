@@ -2,10 +2,10 @@ import React from 'react';
 import ReactFlow, { Background, Controls } from 'reactflow';
 
 import { DND_ID } from '@/commons/constants';
-import LibraryPanel from '@/components/UI/LibraryPanel';
-import { CUSTOM_X_FORCE_NODES } from '@/components/UI/LibraryPanel/nodes/nodeTypes';
-import TopBar from '@/components/UI/TopBar';
-import WelcomePanel from '@/components/UI/WelcomePanel';
+import LibraryPanel from '@/components/LibraryPanel';
+import { CUSTOM_X_FORCE_NODES } from '@/components/LibraryPanel/nodes/nodeTypes';
+import TopBar from '@/components/TopBar';
+import EmptyWorkstation from '@/components/Workstation';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
 import { ModalContext } from '@/contexts/ModalContext';
 import useDnDFlow from '@/hooks/useDnDFlow';
@@ -33,7 +33,7 @@ const AppX = () => {
       <LibraryPanel />
       <div className="flex-grow">
         <TopBar />
-        <WelcomePanel />
+        <EmptyWorkstation />
         <ReactFlow
           nodes={nodes}
           edges={edges}

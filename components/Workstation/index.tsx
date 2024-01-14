@@ -3,10 +3,10 @@ import useDnDStore from '@/stores/useDnDStore';
 import Image from 'next/image';
 import React from 'react';
 
-type WelcomePanelButtonProps = React.HTMLProps<HTMLDivElement> & {
+type ButtonProps = React.HTMLProps<HTMLDivElement> & {
   name: string;
 };
-const WelcomePanelButton: React.FC<WelcomePanelButtonProps> = (props) => {
+const Button: React.FC<ButtonProps> = (props) => {
   return (
     <div {...props}>
       <div className="bg-gray-100 border border-gray-300 rounded skew-x-12 cursor-pointer hover:bg-gray-200 hover:border-gray-400 inline-block">
@@ -15,7 +15,7 @@ const WelcomePanelButton: React.FC<WelcomePanelButtonProps> = (props) => {
     </div>
   );
 };
-const WelcomePanel = () => {
+const EmptyWorkstation = () => {
   const { nodes } = useDnDStore();
   const [panelVisible, setPanelVisible] = React.useState(true);
   const [domLoaded, setDomLoaded] = React.useState(false);
@@ -42,11 +42,12 @@ const WelcomePanel = () => {
   return (
     <div
       className="flex w-[calc(100vw-320px)] justify-center items-center top-0 mt-11 h-[calc(100vh-44px)] absolute px-12 xl:px-64 z-10"
+      draggable={false}
       onDragEnterCapture={onNodeDragOver}
     >
       <div>
         <div className="flex flex-col items-center justify-center opacity-60">
-          <Image priority src={'/x-force-ide.svg'} width={217} height={69} alt="software 2.0" />
+          <Image priority src={'/x-force-ide.svg'} width={217} height={69} alt="software 2.0" draggable={false} />
           <p className="text-bold text-2xl pt-6">
             Create task specific agent workforces for your custom business logic using diagrams.
           </p>
@@ -62,7 +63,11 @@ const WelcomePanel = () => {
             {'\n\n\n'}
             We support enterprises by providing them Cloud Runs with our operating system build to run LLMs. Contact us
             to learn more{' '}
-            <a className="text-blue-500 cursor-pointer underline" href="mailto:enterprise-support@x-force.ai">
+            <a
+              className="text-blue-500 cursor-pointer underline"
+              href="mailto:enterprise-support@x-force.ai"
+              draggable={false}
+            >
               enterprise-support@x-force.ai
             </a>
             .
@@ -72,12 +77,12 @@ const WelcomePanel = () => {
           </p>
         </div>
         <div className="flex flex-col pt-12 opacity-75">
-          <WelcomePanelButton name={'New Project'} onClick={onClickNewProject} />
-          <WelcomePanelButton name={'Getting Started Guide'} className="pt-1" onClick={onClickGettingStartedGuide} />
+          <Button name={'New Project'} onClick={onClickNewProject} />
+          <Button name={'Getting Started Guide'} className="pt-1" onClick={onClickGettingStartedGuide} />
         </div>
       </div>
     </div>
   );
 };
 
-export default WelcomePanel;
+export default EmptyWorkstation;

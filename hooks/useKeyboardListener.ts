@@ -14,9 +14,11 @@ function useKeyboardListener({ onSave }: ArgsType) {
     (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
         e.preventDefault();
-        onSave?.f();
-        setModal(onSave?.msg || null);
-        setPoints({ bottom: 44, right: 44 });
+        if (onSave) {
+          onSave.f();
+          setModal(onSave.msg || null);
+          setPoints({ bottom: 44, right: 44 });
+        }
       }
     },
     [onSave, setModal, setPoints],

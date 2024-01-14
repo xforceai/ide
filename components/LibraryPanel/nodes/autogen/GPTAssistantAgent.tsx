@@ -1,4 +1,4 @@
-import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/UI/LibraryPanel/nodes/skeleton';
+import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/LibraryPanel/nodes/ToolbarSkeleton';
 import { ValidatorContext } from '@/contexts/ValidatorContext';
 import useDnDStore from '@/stores/useDnDStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
