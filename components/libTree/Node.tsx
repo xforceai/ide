@@ -1,4 +1,4 @@
-import { TreeProps } from '@/components/libTree/types';
+import { TreeProps } from '@/components/LibTree/types';
 import React from 'react';
 
 type NodeProps<T> = {

@@ -1,8 +1,8 @@
 import { DATA_TRANSFER_KEY, GETTING_STARTED_GUIDE_URL } from '@/commons/constants';
+import Tree from '@/components/LibTree/Tree';
+import { TreeProps } from '@/components/LibTree/types';
 import NodeSkeleton from '@/components/LibraryPanel/NodeSkeleton';
 import { XForceNodeType, X_FORCE_NODES } from '@/components/LibraryPanel/nodes/nodeTypes';
-import Tree from '@/components/libTree/Tree';
-import { TreeProps } from '@/components/libTree/types';
 import Image from 'next/image';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
