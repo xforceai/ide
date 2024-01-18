@@ -4,7 +4,7 @@ import { ValidatorContext } from '@/contexts/ValidatorContext';
 import useDnDStore from '@/stores/useDnDStore';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
+import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps } from 'reactflow';
 
 import { highlight, languages } from 'prismjs';
 import 'prismjs/components/prism-clike';
@@ -15,12 +15,12 @@ import Editor from 'react-simple-code-editor';
 const CustomFunction: React.FC<ReactFlowNodeProps> = (props) => {
   const { errors } = React.useContext(ValidatorContext);
   const { addNodeData } = useDnDStore();
-  const { getNode } = useReactFlow();
   const [toolbarVisible, setToolbarVisible] = React.useState(false);
+  const [code, setCode] = React.useState('');
 
-  const data = getNode(props.id)?.data;
   const onCustomFuncChange = (code: string) => {
     addNodeData(props.id, { func: code });
+    setCode(code);
   };
 
   return (
@@ -50,10 +50,10 @@ const CustomFunction: React.FC<ReactFlowNodeProps> = (props) => {
       <div className="p-2 bg-gray-50">
         <div className="flex justify-between items-center pt-2">
           <Editor
-            value={data?.func}
-            placeholder="def my_custom_function(arg1, arg2):"
+            value={code}
             onValueChange={onCustomFuncChange}
-            highlight={(code) => highlight(code || '', languages.python, 'py')}
+            placeholder="def my_custom_function(arg1, arg2):"
+            highlight={(code) => highlight(code || '', languages.python!, 'py')}
             padding={10}
             className="max-w-96 max-h-96 min-h-16 overflow-y-auto bg-white w-full"
             style={{
