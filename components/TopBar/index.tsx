@@ -3,7 +3,7 @@ import { toPng } from 'html-to-image';
 import React from 'react';
 import { getRectOfNodes, getTransformForBounds, useReactFlow } from 'reactflow';
 
-import { EXAMPLES_URL, GETTING_STARTED_GUIDE_URL } from '@/commons/constants';
+import { EXAMPLES_URL, GETTING_STARTED_GUIDE_URL, GITHUB_URL } from '@/commons/constants';
 import { ContextMenuItemType } from '@/commons/types';
 import ContextMenuModal from '@/components/modals/ContextMenu/ContextMenuModal';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
@@ -107,6 +107,7 @@ const TopBar: React.FC = () => {
         <div className="flex">
           <MenuItem name="Getting Started" onClick={() => window.open(GETTING_STARTED_GUIDE_URL, '_blank')} />
           <MenuItem name="Examples" className="ml-2" onClick={() => window.open(EXAMPLES_URL, '_blank')} />
+          <MenuItem name="Contribute" className="ml-2" onClick={() => window.open(GITHUB_URL, '_blank')} />
         </div>
       </div>
     </div>
