@@ -2,6 +2,8 @@
 
 ![Alt text](docs/image.png)
 
+### Create your own workforce @ [ide.x-force.ai](https://ide.x-force.ai)
+
 ## What is X-Force IDE?
 
 X-Force IDE is a low-code, agent-as-a-service UI framework that enables you to create agent-based workforces through a drag-and-drop interface. You can export the workforces you create as Python scripts and run them on your local machine.
