@@ -25,22 +25,23 @@ const GroupChat = z.object({
   maxRounds: z.number().optional(),
   agentSelection: AgentSelectionEnum.default('auto'),
 });
-
 const GPTAssistantAgent = z.object({
   variableName: VariableName,
   OAIId: z
     .string({ required_error: 'The OpenAI Id of the assistant agent is required.' })
     .min(1, { message: 'The OpenAI Id of the assistant agent is required.' }),
 });
-
+const AssistantAgent = z.object({
+  variableName: VariableName,
+  systemMessage: z.string().optional(),
+});
 const CustomFunction = z.object({
   func: z.string().optional(),
 });
-
 const LLMOpenAI = z.object({
   model: z
-    .enum(['gpt-3.5-turbo-1106', 'gpt-3.5-turbo-16k', 'gpt-4-0613', 'gpt-4-32k-0613'])
-    .default('gpt-3.5-turbo-1106'),
+    .enum(['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4', 'gpt-4-32k', 'gpt-4-1106-preview'])
+    .default('gpt-3.5-turbo'),
   apiKey: z.string().optional(),
 });
 
@@ -49,6 +50,7 @@ export const DnDFlowValidationSchema = z.array(
     USER_PROXY: z.optional(UserProxy),
     GROUP_CHAT: z.optional(GroupChat),
     GPT_ASSISTANT_AGENT: z.optional(GPTAssistantAgent),
+    ASSISTANT_AGENT: z.optional(AssistantAgent),
     CUSTOM_FUNCTION: z.optional(CustomFunction),
     LLM_OPENAI: z.optional(LLMOpenAI),
   }),

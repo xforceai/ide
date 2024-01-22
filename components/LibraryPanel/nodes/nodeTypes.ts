@@ -1,3 +1,4 @@
+import AssistantAgent from '@/components/LibraryPanel/nodes/autogen/AssistantAgent';
 import CustomFunction from '@/components/LibraryPanel/nodes/autogen/CustomFunction';
 import GPTAssistantAgent from '@/components/LibraryPanel/nodes/autogen/GPTAssistantAgent';
 import GroupChat from '@/components/LibraryPanel/nodes/autogen/GroupChat';
@@ -12,6 +13,7 @@ export enum XForceNodesEnum {
   GPT_ASSISTANT_AGENT = 'GPT_ASSISTANT_AGENT',
   CUSTOM_FUNCTION = 'CUSTOM_FUNCTION',
   LLM_OPENAI = 'LLM_OPENAI',
+  ASSISTANT_AGENT = 'ASSISTANT_AGENT',
 }
 export type XForceNodeDataType = {
   connectivity: {
@@ -28,7 +30,12 @@ export const X_FORCE_NODES: { [k in XForceNodesEnum]: XForceNodeType } = {
     dragHandle: `.${XForceNodesEnum.GROUP_CHAT}`,
     data: {
       connectivity: {
-        input: [XForceNodesEnum.USER_PROXY, XForceNodesEnum.GPT_ASSISTANT_AGENT, XForceNodesEnum.LLM_OPENAI],
+        input: [
+          XForceNodesEnum.USER_PROXY,
+          XForceNodesEnum.GPT_ASSISTANT_AGENT,
+          XForceNodesEnum.LLM_OPENAI,
+          XForceNodesEnum.ASSISTANT_AGENT,
+        ],
         output: null,
       },
     },
@@ -73,7 +80,18 @@ export const X_FORCE_NODES: { [k in XForceNodesEnum]: XForceNodeType } = {
     data: {
       connectivity: {
         input: null,
-        output: [XForceNodesEnum.GPT_ASSISTANT_AGENT, XForceNodesEnum.GROUP_CHAT],
+        output: [XForceNodesEnum.GPT_ASSISTANT_AGENT, XForceNodesEnum.GROUP_CHAT, XForceNodesEnum.ASSISTANT_AGENT],
+      },
+    },
+  },
+  ASSISTANT_AGENT: {
+    id: XForceNodesEnum.ASSISTANT_AGENT,
+    type: XForceNodesEnum.ASSISTANT_AGENT,
+    dragHandle: `.${XForceNodesEnum.ASSISTANT_AGENT}`,
+    data: {
+      connectivity: {
+        input: [XForceNodesEnum.LLM_OPENAI],
+        output: [XForceNodesEnum.GROUP_CHAT],
       },
     },
   },
@@ -84,4 +102,5 @@ export const CUSTOM_X_FORCE_NODES: { [_ in XForceNodesEnum]: React.ComponentType
   GPT_ASSISTANT_AGENT: GPTAssistantAgent,
   CUSTOM_FUNCTION: CustomFunction,
   LLM_OPENAI: OpenAI,
+  ASSISTANT_AGENT: AssistantAgent,
 };

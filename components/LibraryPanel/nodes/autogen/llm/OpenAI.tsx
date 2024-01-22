@@ -7,10 +7,11 @@ import React from 'react';
 import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
 
 export enum OAIModelsEnum {
-  GPT_3_5_TURBO = 'gpt-3.5-turbo-1106',
+  GPT_3_5_TURBO = 'gpt-3.5-turbo',
   GPT_3_5_TURBO_16K = 'gpt-3.5-turbo-16k',
-  GPT_4 = 'gpt-4-0613',
-  GPT_4_32K = 'gpt-4-32k-0613',
+  GPT_4 = 'gpt-4',
+  GPT_4_32K = 'gpt-4-32k',
+  GPT_4_TURBO = 'gpt-4-1106-preview',
 }
 
 const OpenAI: React.FC<ReactFlowNodeProps> = (props) => {
@@ -64,14 +65,15 @@ const OpenAI: React.FC<ReactFlowNodeProps> = (props) => {
             value={data?.model || ''}
             onChange={onModelNameChange}
           >
-            <option value={OAIModelsEnum.GPT_3_5_TURBO}>gpt-3.5-turbo-1106</option>
+            <option value={OAIModelsEnum.GPT_3_5_TURBO}>gpt-3.5-turbo</option>
             <option value={OAIModelsEnum.GPT_3_5_TURBO_16K}>gpt-3.5-turbo-16k</option>
-            <option value={OAIModelsEnum.GPT_4}>gpt-4-0613</option>
-            <option value={OAIModelsEnum.GPT_4_32K}>gpt-4-32k-0613</option>
+            <option value={OAIModelsEnum.GPT_4}>gpt-4</option>
+            <option value={OAIModelsEnum.GPT_4_32K}>gpt-4-32k</option>
+            <option value={OAIModelsEnum.GPT_4_TURBO}>gpt-4-turbo</option>
           </select>
         </div>
         {errors?.[props.id]?.func && <span className="text-red-500 text-xs">{errors?.[props.id]?.func}</span>}
-        <div className="p-2 bg-gray-50 pt-2">
+        <div>
           <div className="flex justify-between items-center pt-2">
             <div>API Key</div>
             <input

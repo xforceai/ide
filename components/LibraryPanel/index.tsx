@@ -107,6 +107,22 @@ const LibraryPanel = () => {
             />
           ),
         },
+        {
+          id: 'n4',
+          name: 'AssistantAgent',
+          onDrag: (event) => onDragStart(event, X_FORCE_NODES.ASSISTANT_AGENT),
+          jsxElement: (
+            <NodeSkeleton
+              name="AssistantAgent"
+              content={
+                <div className="text-sm">
+                  <span className="bg-gray-100 px-1 text-gray-700 rounded-sm mr-1 font-semibold">AssistantAgent</span>
+                  <span>is an agent you can configure with a system message.</span>
+                </div>
+              }
+            />
+          ),
+        },
       ],
     },
     {
