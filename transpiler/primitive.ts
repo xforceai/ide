@@ -14,6 +14,7 @@ a simplified hint from one of our internal modules;
 ```
  */
 import { XForceNodesEnum } from '@/components/LibraryPanel/nodes/nodeTypes';
+import { OAIModelsEnum } from '@/types/enum';
 import { extractNodeName } from '@/utils/nodeUtils';
 import { Edge as ReactFlowEdge, Node as ReactFlowNode } from 'reactflow';
 
@@ -39,60 +40,63 @@ export const NODE_TO_CODE_SCHEMA: { [k in XForceNodesEnum]: (params: any) => str
     maxRounds,
     agentSelection,
     agents,
-    configListVarName,
+    config,
   }: {
     variableName: string;
     maxRounds: number;
     agentSelection: string;
     agents: string[];
-    configListVarName: string;
+    config: string;
   }) =>
     `${variableName} = autogen.GroupChat(agents=[${agents}], messages=[], max_round=${
       maxRounds || 15
     }, speaker_selection_method="${agentSelection || 'auto'}")
-${variableName}_manager = autogen.GroupChatManager(groupchat=${variableName}, llm_config = {"config_list": ${configListVarName}})`,
+${variableName}_manager = autogen.GroupChatManager(groupchat=${variableName}, llm_config = {"config_list": [${config}]})`,
   USER_PROXY: ({ variableName }: { variableName: string }) =>
-    `${variableName} = UserProxyAgent(name="${variableName}", human_input_mode="ALWAYS", max_consecutive_auto_reply=1)`,
+    `${variableName} = UserProxyAgent(name="${variableName}", human_input_mode="ALWAYS", max_consecutive_auto_reply=1, code_execution_config={
+      "work_dir": "x-force-execution-dir",
+      "use_docker": False,
+  },)`,
   GPT_ASSISTANT_AGENT: ({
     variableName,
     OAIId,
     funcMap,
-    configListVarName,
+    config,
   }: {
     variableName: string;
     OAIId: string;
-    configListVarName: string;
+    config: string;
     funcMap?: string;
-  }) => `${variableName} = GPTAssistantAgent(name="${variableName}", llm_config = {"config_list": ${
-    configListVarName || 'None'
-  }, "assistant_id":"${OAIId}"})
+  }) => `${variableName} = GPTAssistantAgent(name="${variableName}", llm_config = {"config_list": [${config}], "assistant_id":"${OAIId}"})
 ${funcMap ? `${variableName}.register_function(function_map=${funcMap || 'None'})` : ''}`,
   CUSTOM_FUNCTION: ({ func }: { func: string }) => `${func || ''}`,
-  LLM_OPENAI: ({ i, model, apiKey }: { i: number; model: string; apiKey: string }) =>
-    `openai_config_${i} = [{'model': '${model || 'gpt-3.5-turbo-1106'}', 'api_key': '${
-      apiKey || '<please fill here with your api key>'
-    }'}]`,
   ASSISTANT_AGENT: ({
     variableName,
     systemPrompt,
-    configListVarName,
+    config,
   }: {
     variableName: string;
     systemPrompt: string;
-    configListVarName: string;
+    config: string;
   }) => `${variableName} = autogen.AssistantAgent(
     name="${variableName}",
-    llm_config={"config_list": ${configListVarName || 'None'}},
+    llm_config={"config_list": [${config}]},
     ${systemPrompt ? `system_message="${systemPrompt}"` : ``}
 )`,
 };
-export const CODE_BUILDER = (nodes: ReactFlowNode[], edges: ReactFlowEdge[]) => {
+export const CODE_BUILDER = (nodes: ReactFlowNode[], edges: ReactFlowEdge[], oaiKey: string) => {
   const codes: string[] = [];
   const m = new Map();
 
+  const getConfig = (el: ReactFlowNode) => {
+    return {
+      model: el?.data?.selectedModel || OAIModelsEnum.GPT_3_5_TURBO,
+      api_key: oaiKey || '<please provide your api key here>',
+    };
+  };
+
   // nodes
   const customFuncs = nodes.filter((node) => node.type === XForceNodesEnum.CUSTOM_FUNCTION);
-  const llmConfigs = nodes.filter((node) => node.type === XForceNodesEnum.LLM_OPENAI);
   const gptAssistants = nodes.filter((node) => node.type === XForceNodesEnum.GPT_ASSISTANT_AGENT);
   const assistantAgents = nodes.filter((node) => node.type === XForceNodesEnum.ASSISTANT_AGENT);
   const userProxies = nodes.filter((node) => node.type === XForceNodesEnum.USER_PROXY);
@@ -112,13 +116,6 @@ export const CODE_BUILDER = (nodes: ReactFlowNode[], edges: ReactFlowEdge[]) => 
     codes.push(codeblock);
   });
 
-  llmConfigs.forEach((el, index) => {
-    m.set(el.id, `openai_config_${index}`);
-    const key = el.type as keyof typeof XForceNodesEnum;
-    const codeblock = NODE_TO_CODE_SCHEMA[key]?.({ ...el.data, i: index } || undefined);
-    codes.push(codeblock);
-  });
-
   gptAssistants.forEach((el) => {
     m.set(el.id, el?.data?.variableName);
     const key = el.type as keyof typeof XForceNodesEnum;
@@ -133,15 +130,8 @@ export const CODE_BUILDER = (nodes: ReactFlowNode[], edges: ReactFlowEdge[]) => 
         return funcNames.map((f: string) => `"${f}": ${f}`);
       });
     const functionMap = `{${connectedFuncNames}}`;
-    const connectedLLMConfig = edges.find(
-      (e) =>
-        extractNodeName(e.source || '') === XForceNodesEnum.LLM_OPENAI &&
-        extractNodeName(e.target || '') === XForceNodesEnum.GPT_ASSISTANT_AGENT,
-    );
-    const llmConfigVarName = m.get(connectedLLMConfig?.source);
-
     const codeblock = NODE_TO_CODE_SCHEMA[key]?.(
-      { ...el.data, funcMap: functionMap, configListVarName: llmConfigVarName } || undefined,
+      { ...el.data, funcMap: functionMap, config: JSON.stringify(getConfig(el)) } || undefined,
     );
     codes.push(codeblock);
   });
@@ -149,14 +139,7 @@ export const CODE_BUILDER = (nodes: ReactFlowNode[], edges: ReactFlowEdge[]) => 
   assistantAgents.forEach((el) => {
     m.set(el.id, el?.data?.variableName);
     const key = el.type as keyof typeof XForceNodesEnum;
-    const connectedLLMConfig = edges.find(
-      (e) =>
-        extractNodeName(e.source || '') === XForceNodesEnum.LLM_OPENAI &&
-        extractNodeName(e.target || '') === XForceNodesEnum.ASSISTANT_AGENT,
-    );
-    const llmConfigVarName = m.get(connectedLLMConfig?.source);
-
-    const codeblock = NODE_TO_CODE_SCHEMA[key]?.({ ...el.data, configListVarName: llmConfigVarName } || undefined);
+    const codeblock = NODE_TO_CODE_SCHEMA[key]?.({ ...el.data, config: JSON.stringify(getConfig(el)) } || undefined);
     codes.push(codeblock);
   });
 
@@ -171,22 +154,11 @@ export const CODE_BUILDER = (nodes: ReactFlowNode[], edges: ReactFlowEdge[]) => 
     m.set(el.id, el?.data?.variableName);
 
     const agents = edges
-      .filter(
-        (e) =>
-          extractNodeName(e.source || '') !== XForceNodesEnum.LLM_OPENAI &&
-          extractNodeName(e.target || '') === XForceNodesEnum.GROUP_CHAT,
-      )
+      .filter((e) => extractNodeName(e.target || '') === XForceNodesEnum.GROUP_CHAT)
       .map((e) => m.get(e.source));
-
-    const connectedLLMConfig = edges.find(
-      (e) =>
-        extractNodeName(e.source || '') === XForceNodesEnum.LLM_OPENAI &&
-        extractNodeName(e.target || '') === XForceNodesEnum.GROUP_CHAT,
-    );
-    const llmConfigVarName = m.get(connectedLLMConfig?.source);
     const key = el.type as keyof typeof XForceNodesEnum;
     const codeblock = NODE_TO_CODE_SCHEMA[key]?.(
-      { ...el.data, agents, configListVarName: llmConfigVarName } || undefined,
+      { ...el.data, agents, config: JSON.stringify(getConfig(el)) } || undefined,
     );
     codes.push(codeblock);
   });

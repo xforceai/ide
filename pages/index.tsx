@@ -2,6 +2,7 @@ import AppX from '@/components/UI/App';
 import MobilePanel from '@/components/UI/Mobile';
 import ModalContextProvider from '@/contexts/ModalContext';
 import ValidatorContextProvider from '@/contexts/ValidatorContext';
+import { Analytics } from '@vercel/analytics/react';
 import React from 'react';
 import { ReactFlowProvider } from 'reactflow';
 
@@ -17,6 +18,7 @@ const IDE = () => {
             <ModalContextProvider>
               <ReactFlowProvider>
                 <AppX />
+                <Analytics />
               </ReactFlowProvider>
             </ModalContextProvider>
           </ValidatorContextProvider>

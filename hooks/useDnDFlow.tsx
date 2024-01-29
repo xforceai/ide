@@ -8,7 +8,7 @@ import useDnDStore from '@/stores/useDnDStore';
 import { extractNodeName } from '@/utils/nodeUtils';
 import { includes } from 'lodash';
 import React from 'react';
-import { Connection, Edge, Node, ReactFlowJsonObject, ReactFlowProps } from 'reactflow';
+import { Connection, Edge, Node, ReactFlowProps } from 'reactflow';
 
 type ReturnType = {
   onNodeDragOver: ReactFlowProps['onDragOver'];
@@ -22,7 +22,7 @@ type ReturnType = {
 
 function useDnDFlow(): ReturnType {
   const { rfInstance, addNode, deleteNode, deleteEdge } = useDnDStore();
-  const { setModal, setPoints } = React.useContext(ModalContext);
+  const { setModal } = React.useContext(ModalContext);
 
   const onNodeDragOver: React.DragEventHandler<HTMLDivElement> = React.useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
@@ -60,40 +60,25 @@ function useDnDFlow(): ReturnType {
   const onNodeContextMenu = React.useCallback(
     (event: React.MouseEvent, node: Node) => {
       const CTX_MENU__NODE: ContextMenuItemType[] = [{ item: 'Delete Node', onClick: () => deleteNode(node) }];
-      setModal(<ContextMenuModal menu={CTX_MENU__NODE} />);
-      setPoints({ left: event.pageX, top: event.pageY });
+      setModal(<ContextMenuModal menu={CTX_MENU__NODE} style={{ left: event.pageX, top: event.pageY }} />);
     },
-    [deleteNode, setModal, setPoints],
+    [deleteNode, setModal],
   );
 
   const onEdgeContextMenu = React.useCallback(
     (event: React.MouseEvent, edge: Edge) => {
       const CTX_MENU__EDGE: ContextMenuItemType[] = [{ item: 'Delete Edge', onClick: () => deleteEdge(edge) }];
-      setModal(<ContextMenuModal menu={CTX_MENU__EDGE} />);
-      setPoints({ left: event.pageX, top: event.pageY });
+      setModal(<ContextMenuModal menu={CTX_MENU__EDGE} style={{ left: event.pageX, top: event.pageY }} />);
     },
-    [deleteEdge, setModal, setPoints],
+    [deleteEdge, setModal],
   );
 
   /**** custom methods ****/
-  const maskPrivateDataBeforeSave = (): ReactFlowJsonObject<Node[], Edge[]> | null => {
-    if (rfInstance) {
-      const flow = rfInstance.toObject();
-      const maskedNodes = flow.nodes.map((n) => {
-        if (n.type === XForceNodesEnum.LLM_OPENAI) {
-          return { ...n, data: { ...n.data, apiKey: '' } };
-        }
-        return n;
-      });
-      flow.nodes = maskedNodes;
-      return flow;
-    }
-    return null;
-  };
   const onSaveGraph = (): boolean => {
     try {
       if (rfInstance) {
-        localStorage.setItem(LOCAL_HISTORY_KEY, JSON.stringify(maskPrivateDataBeforeSave()));
+        const flow = rfInstance.toObject();
+        localStorage.setItem(LOCAL_HISTORY_KEY, JSON.stringify(flow));
         return true;
       }
     } catch (err) {

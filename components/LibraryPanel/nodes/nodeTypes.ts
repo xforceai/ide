@@ -3,7 +3,6 @@ import CustomFunction from '@/components/LibraryPanel/nodes/autogen/CustomFuncti
 import GPTAssistantAgent from '@/components/LibraryPanel/nodes/autogen/GPTAssistantAgent';
 import GroupChat from '@/components/LibraryPanel/nodes/autogen/GroupChat';
 import UserProxy from '@/components/LibraryPanel/nodes/autogen/UserProxy';
-import OpenAI from '@/components/LibraryPanel/nodes/autogen/llm/OpenAI';
 import React from 'react';
 import { NodeProps, Node as ReactFlowNode } from 'reactflow';
 
@@ -12,7 +11,6 @@ export enum XForceNodesEnum {
   GROUP_CHAT = 'GROUP_CHAT',
   GPT_ASSISTANT_AGENT = 'GPT_ASSISTANT_AGENT',
   CUSTOM_FUNCTION = 'CUSTOM_FUNCTION',
-  LLM_OPENAI = 'LLM_OPENAI',
   ASSISTANT_AGENT = 'ASSISTANT_AGENT',
 }
 export type XForceNodeDataType = {
@@ -30,12 +28,7 @@ export const X_FORCE_NODES: { [k in XForceNodesEnum]: XForceNodeType } = {
     dragHandle: `.${XForceNodesEnum.GROUP_CHAT}`,
     data: {
       connectivity: {
-        input: [
-          XForceNodesEnum.USER_PROXY,
-          XForceNodesEnum.GPT_ASSISTANT_AGENT,
-          XForceNodesEnum.LLM_OPENAI,
-          XForceNodesEnum.ASSISTANT_AGENT,
-        ],
+        input: [XForceNodesEnum.USER_PROXY, XForceNodesEnum.GPT_ASSISTANT_AGENT, XForceNodesEnum.ASSISTANT_AGENT],
         output: null,
       },
     },
@@ -57,7 +50,7 @@ export const X_FORCE_NODES: { [k in XForceNodesEnum]: XForceNodeType } = {
     dragHandle: `.${XForceNodesEnum.GPT_ASSISTANT_AGENT}`,
     data: {
       connectivity: {
-        input: [XForceNodesEnum.CUSTOM_FUNCTION, XForceNodesEnum.LLM_OPENAI],
+        input: [XForceNodesEnum.CUSTOM_FUNCTION],
         output: [XForceNodesEnum.GROUP_CHAT],
       },
     },
@@ -73,24 +66,13 @@ export const X_FORCE_NODES: { [k in XForceNodesEnum]: XForceNodeType } = {
       },
     },
   },
-  LLM_OPENAI: {
-    id: XForceNodesEnum.LLM_OPENAI,
-    type: XForceNodesEnum.LLM_OPENAI,
-    dragHandle: `.${XForceNodesEnum.LLM_OPENAI}`,
-    data: {
-      connectivity: {
-        input: null,
-        output: [XForceNodesEnum.GPT_ASSISTANT_AGENT, XForceNodesEnum.GROUP_CHAT, XForceNodesEnum.ASSISTANT_AGENT],
-      },
-    },
-  },
   ASSISTANT_AGENT: {
     id: XForceNodesEnum.ASSISTANT_AGENT,
     type: XForceNodesEnum.ASSISTANT_AGENT,
     dragHandle: `.${XForceNodesEnum.ASSISTANT_AGENT}`,
     data: {
       connectivity: {
-        input: [XForceNodesEnum.LLM_OPENAI],
+        input: null,
         output: [XForceNodesEnum.GROUP_CHAT],
       },
     },
@@ -101,6 +83,5 @@ export const CUSTOM_X_FORCE_NODES: { [_ in XForceNodesEnum]: React.ComponentType
   GROUP_CHAT: GroupChat,
   GPT_ASSISTANT_AGENT: GPTAssistantAgent,
   CUSTOM_FUNCTION: CustomFunction,
-  LLM_OPENAI: OpenAI,
   ASSISTANT_AGENT: AssistantAgent,
 };

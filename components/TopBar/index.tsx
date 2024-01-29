@@ -8,6 +8,7 @@ import { ContextMenuItemType } from '@/commons/types';
 import ContextMenuModal from '@/components/modals/ContextMenu/ContextMenuModal';
 import ToastMessageModal from '@/components/modals/ToastMessageModal';
 import { ValidatorContext } from '@/contexts/ValidatorContext';
+import useAppStore from '@/stores/useAppStore';
 import useDnDStore from '@/stores/useDnDStore';
 import { CODE_BUILDER } from '@/transpiler/primitive';
 
@@ -29,9 +30,10 @@ const IMAGE_WIDTH = 1024;
 const IMAGE_HEIGHT = 768;
 
 const TopBar: React.FC = () => {
-  const { setModal, setPoints } = React.useContext(ModalContext);
+  const { setModal } = React.useContext(ModalContext);
   const { getNodes, getEdges } = useReactFlow();
   const { nodes, clearGraph } = useDnDStore();
+  const { oaiKey } = useAppStore();
   const { validate } = React.useContext(ValidatorContext);
 
   const onClickExportAsPython = () => {
@@ -41,7 +43,7 @@ const TopBar: React.FC = () => {
     }
 
     const element = document.createElement('a');
-    const file = new Blob([CODE_BUILDER(getNodes(), getEdges())], { type: 'text/plain' });
+    const file = new Blob([CODE_BUILDER(getNodes(), getEdges(), oaiKey)], { type: 'text/plain' });
 
     element.href = URL.createObjectURL(file);
     element.download = 'my x-force workflow.py';
@@ -70,8 +72,7 @@ const TopBar: React.FC = () => {
   };
 
   const onSave = () => {
-    setModal(<ToastMessageModal msg="Your changes are automatically saved." />);
-    setPoints({ bottom: 44, right: 44 });
+    setModal(<ToastMessageModal msg="Your changes are automatically saved." style={{ bottom: 44, right: 44 }} />);
   };
   const onClearGraph = () => {
     if (nodes) {
@@ -95,8 +96,7 @@ const TopBar: React.FC = () => {
   const onClickFile = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.preventDefault();
     e.stopPropagation();
-    setModal(<ContextMenuModal menu={CTX_MENU__FILE} />);
-    setPoints({ left: e.pageX, top: e.pageY });
+    setModal(<ContextMenuModal menu={CTX_MENU__FILE} style={{ left: e.pageX, top: e.pageY }} />);
   };
   return (
     <div className={`absolute top-0 w-[calc(100vw-320px)] bg-gray-50 h-11 border-b border-b-gray-200 z-10 opacity-95`}>

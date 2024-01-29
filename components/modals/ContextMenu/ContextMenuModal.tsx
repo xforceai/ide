@@ -5,8 +5,9 @@ import React from 'react';
 
 type ContextMenuModalPropsType = {
   menu: ContextMenuItemType[];
+  style: React.CSSProperties;
 };
-const ContextMenuModal: React.FC<ContextMenuModalPropsType> = ({ menu }) => {
+const ContextMenuModal: React.FC<ContextMenuModalPropsType> = ({ menu, style }) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const { setModal } = React.useContext(ModalContext);
   React.useEffect(() => {
@@ -24,7 +25,11 @@ const ContextMenuModal: React.FC<ContextMenuModalPropsType> = ({ menu }) => {
     return menu?.map((menuItem, index) => <ContextMenuItem key={index} {...menuItem} />);
   };
   return (
-    <div className="bg-gray-200 border border-gray-300 rounded-[4px] cursor-pointer select-none" ref={ref}>
+    <div
+      className="bg-gray-200 border border-gray-300 rounded-[4px] cursor-pointer select-none absolute"
+      ref={ref}
+      style={style}
+    >
       <ul>{renderItems()}</ul>
     </div>
   );

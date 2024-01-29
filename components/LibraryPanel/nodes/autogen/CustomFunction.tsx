@@ -48,7 +48,7 @@ const CustomFunction: React.FC<ReactFlowNodeProps> = (props) => {
         </NodeToolbar>
       </div>
       <div className="p-2 bg-gray-50">
-        <div className="flex justify-between items-center pt-2">
+        <div className="flex justify-between items-center">
           <Editor
             value={code}
             onValueChange={onCustomFuncChange}

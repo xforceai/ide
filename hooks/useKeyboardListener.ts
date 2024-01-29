@@ -3,25 +3,22 @@ import React, { ReactElement } from 'react';
 
 type ArgsType = {
   onSave?: {
-    f: () => void;
-    msg: ReactElement;
+    modal: ReactElement;
   };
 };
 function useKeyboardListener({ onSave }: ArgsType) {
-  const { setModal, setPoints } = React.useContext(ModalContext);
+  const { setModal } = React.useContext(ModalContext);
 
   const onKeyDown = React.useCallback(
     (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 's') {
         e.preventDefault();
         if (onSave) {
-          onSave.f();
-          setModal(onSave.msg || null);
-          setPoints({ bottom: 44, right: 44 });
+          setModal(onSave.modal || null);
         }
       }
     },
-    [onSave, setModal, setPoints],
+    [onSave, setModal],
   );
 
   React.useEffect(() => {
