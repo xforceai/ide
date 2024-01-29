@@ -1,7 +1,8 @@
 import React from 'react';
-import ReactFlow, { Background, Controls } from 'reactflow';
+import ReactFlow, { Background } from 'reactflow';
 
 import { DND_ID } from '@/commons/constants';
+import AppStatus from '@/components/AppStatus';
 import LibraryPanel from '@/components/LibraryPanel';
 import { CUSTOM_X_FORCE_NODES } from '@/components/LibraryPanel/nodes/nodeTypes';
 import TopBar from '@/components/TopBar';
@@ -10,22 +11,18 @@ import ToastMessageModal from '@/components/modals/ToastMessageModal';
 import { ModalContext } from '@/contexts/ModalContext';
 import useDnDFlow from '@/hooks/useDnDFlow';
 import useKeyboardListener from '@/hooks/useKeyboardListener';
+import useMountedState from '@/hooks/useMountedState';
 import useDnDStore from '@/stores/useDnDStore';
 
 const AppX = () => {
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect, onInit } = useDnDStore();
-  const {
-    onNodeDragOver,
-    onNodeDropToWorkstation,
-    isValidConnection,
-    onNodeContextMenu,
-    onEdgeContextMenu,
-    onSaveGraph,
-  } = useDnDFlow();
+  const isMounted = useMountedState();
+  const { onNodeDragOver, onNodeDropToWorkstation, isValidConnection, onNodeContextMenu, onEdgeContextMenu } =
+    useDnDFlow();
   const { setModal } = React.useContext(ModalContext);
 
   useKeyboardListener({
-    onSave: { f: onSaveGraph, msg: <ToastMessageModal msg="Your changes automatically saved." /> },
+    onSave: { modal: <ToastMessageModal msg="Your changes automatically saved." style={{ bottom: 44, right: 44 }} /> },
   });
 
   return (
@@ -51,7 +48,7 @@ const AppX = () => {
           className={DND_ID}
           attributionPosition="bottom-left"
         >
-          <Controls />
+          {isMounted() && nodes.length ? <AppStatus /> : null}
           <Background />
         </ReactFlow>
       </div>

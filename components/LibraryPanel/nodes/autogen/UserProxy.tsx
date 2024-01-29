@@ -1,3 +1,4 @@
+import FieldSchema, { InputField } from '@/components/LibraryPanel/nodes/Fields';
 import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/LibraryPanel/nodes/ToolbarSkeleton';
 import { ValidatorContext } from '@/contexts/ValidatorContext';
 import useDnDStore from '@/stores/useDnDStore';
@@ -53,38 +54,35 @@ const UserProxy: React.FC<ReactFlowNodeProps> = (props) => {
           />
         </NodeToolbar>
       </div>
-      <div className="p-2 bg-gray-50">
-        <div className="flex justify-between items-center">
-          <div>Agent Name *</div>
-          <input
-            type="text"
-            placeholder="user_proxy"
-            className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
-            defaultValue=""
-            value={data?.variableName || ''}
-            onChange={onVarNameChange}
-          />
-        </div>
-        {errors?.[props.id]?.variableName && (
-          <span className="text-red-500 text-xs">{errors?.[props.id]?.variableName}</span>
-        )}
+      <div className="pb-2 px-2 bg-gray-50">
+        <FieldSchema
+          field={
+            <InputField
+              label="Agent Name"
+              required
+              onChange={onVarNameChange}
+              value={data?.variableName}
+              type="text"
+              placeholder="user_proxy"
+            />
+          }
+          errors={errors?.[props.id]?.variableName}
+        />
+        <FieldSchema
+          field={
+            <InputField
+              label="Initial Prompt"
+              placeholder="Do a research about how..."
+              required
+              onChange={onPromptChange}
+              value={data?.initialPrompt}
+              type="text"
+            />
+          }
+          errors={errors?.[props.id]?.initialPrompt}
+        />
       </div>
-      <div className="p-2 bg-gray-50 pt-2">
-        <div className="flex justify-between items-center">
-          <div>Initial Prompt *</div>
-          <input
-            type="text"
-            placeholder="Do a research about how..."
-            className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
-            defaultValue=""
-            value={data?.initialPrompt || ''}
-            onChange={onPromptChange}
-          />
-        </div>
-        {errors?.[props.id]?.initialPrompt && (
-          <span className="text-red-500 text-xs">{errors?.[props.id]?.initialPrompt}</span>
-        )}
-      </div>
+
       <Handle type="source" position={Position.Bottom} className="rounded-none border-none w-16" />
     </div>
   );

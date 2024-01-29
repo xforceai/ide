@@ -1,4 +1,5 @@
 import { VARIABLE_NAME_REGEX } from '@/commons/regex';
+import { AgentSelectionStrategyEnum, OAIModelsEnum } from '@/types/enum';
 import { z } from 'zod';
 
 const VariableName = z
@@ -11,6 +12,11 @@ const VariableName = z
       'Variable name must start with a letter or underscore, and can only contain letters, numbers, and underscores.',
   });
 
+const LLMEnum = z.nativeEnum(OAIModelsEnum);
+const AgentSelectionEnum = z.nativeEnum(AgentSelectionStrategyEnum);
+
+//
+
 const UserProxy = z.object({
   variableName: VariableName,
   initialPrompt: z
@@ -19,11 +25,10 @@ const UserProxy = z.object({
     })
     .min(1, { message: 'Initial Prompt is required. Your workforce will take this prompt to start the conversation.' }),
 });
-const AgentSelectionEnum = z.enum(['auto', 'manual', 'random', 'round robin']);
 const GroupChat = z.object({
   variableName: VariableName,
   maxRounds: z.number().optional(),
-  agentSelection: AgentSelectionEnum.default('auto'),
+  agentSelection: AgentSelectionEnum.default(AgentSelectionStrategyEnum.AUTO),
 });
 const GPTAssistantAgent = z.object({
   variableName: VariableName,
@@ -38,10 +43,9 @@ const AssistantAgent = z.object({
 const CustomFunction = z.object({
   func: z.string().optional(),
 });
+
 const LLMOpenAI = z.object({
-  model: z
-    .enum(['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4', 'gpt-4-32k', 'gpt-4-1106-preview'])
-    .default('gpt-3.5-turbo'),
+  model: LLMEnum.default(OAIModelsEnum.GPT_3_5_TURBO),
   apiKey: z.string().optional(),
 });
 

@@ -1,6 +1,8 @@
+import FieldSchema, { InputField, SelectField } from '@/components/LibraryPanel/nodes/Fields';
 import { ClsHeaderSkeleton, DefaultContent, ToolbarSkeleton } from '@/components/LibraryPanel/nodes/ToolbarSkeleton';
 import { ValidatorContext } from '@/contexts/ValidatorContext';
 import useDnDStore from '@/stores/useDnDStore';
+import { OAIModelsEnum } from '@/types/enum';
 import { InformationCircleIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { Handle, NodeToolbar, Position, NodeProps as ReactFlowNodeProps, useReactFlow } from 'reactflow';
@@ -48,42 +50,52 @@ const GPTAssistantAgent: React.FC<ReactFlowNodeProps> = (props) => {
               <DefaultContent
                 name="GPTAssistantAgent"
                 description="is an agent that leverages the OpenAI Assistant API for conversational capabilities."
-                docTeaser={`Agent Name: Name of the agent. (ex: my_gpt_assistant_agent_1)\n\nOpenAI ID: The id of the agent that you obtained from https://platform.openai.com/assistants.`}
+                docTeaser={`Agent Name: Name of the agent. (ex: my_gpt_assistant_agent_1)\n\nOpenAI ID: The id of the agent that you obtained from https://platform.openai.com/assistants. LLM: Any large language model provided by OpenAI for the agent to consume.`}
               />
             }
           />
         </NodeToolbar>
       </div>
-      <div className="p-2 bg-gray-50">
-        <div className="flex justify-between items-center">
-          <div>Agent Name *</div>
-          <input
-            type="text"
-            placeholder="my_agent"
-            defaultValue=""
-            onChange={onAgentNameChange}
-            value={data?.variableName || ''}
-            className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
-          />
-        </div>
-        {errors?.[props.id]?.variableName && (
-          <span className="text-red-500 text-xs">{errors?.[props.id]?.variableName}</span>
-        )}
+      <div className="pb-2 px-2 bg-gray-50">
+        <FieldSchema
+          field={
+            <InputField
+              label="Agent Name"
+              required
+              onChange={onAgentNameChange}
+              value={data?.variableName}
+              type="text"
+              placeholder="my_agent"
+            />
+          }
+          errors={errors?.[props.id]?.variableName}
+        />
+        <FieldSchema
+          field={
+            <InputField
+              label="OpenAI ID"
+              required
+              onChange={onOAIIdChange}
+              value={data?.OAIId}
+              type="text"
+              placeholder="asst-****"
+            />
+          }
+          errors={errors?.[props.id]?.OAIId}
+        />
+        <FieldSchema
+          field={
+            <SelectField
+              label="LLM"
+              selected={data?.selectedModel || OAIModelsEnum.GPT_3_5_TURBO}
+              onChange={(e) => addNodeData(props.id, { selectedModel: e.target.value })}
+              options={Object.values(OAIModelsEnum)}
+            />
+          }
+          errors={errors?.[props.id]?.selectedModel}
+        />
       </div>
-      <div className="p-2 bg-gray-50 pt-2">
-        <div className="flex justify-between items-center pt-2">
-          <div>OpenAI ID *</div>
-          <input
-            type="text"
-            placeholder="asst-****"
-            onChange={onOAIIdChange}
-            defaultValue=""
-            value={data?.OAIId || ''}
-            className="px-1 bg-gray-100 rounded-sm border border-gray-300 placeholder:text-gray-400 focus:outline-none focus:bg-white focus:border-teal-500"
-          />
-        </div>
-        {errors?.[props.id]?.OAIId && <span className="text-red-500 text-xs">{errors?.[props.id]?.OAIId}</span>}
-      </div>
+
       <Handle type="target" position={Position.Top} className="rounded-none border-none w-16" />
       <Handle type="source" position={Position.Bottom} className="rounded-none border-none w-16" />
     </div>

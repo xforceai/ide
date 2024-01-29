@@ -12,6 +12,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.18",
     "@svgr/webpack": "^8.1.0",
+    "@vercel/analytics": "^1.1.2",
     "ace-builds": "^1.32.3",
     "html-to-image": "^1.11.11",
     "lodash": "^4.17.21",

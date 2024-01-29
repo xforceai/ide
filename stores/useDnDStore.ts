@@ -1,5 +1,4 @@
 import { LOCAL_HISTORY_KEY } from '@/commons/constants';
-import { XForceNodesEnum } from '@/components/LibraryPanel/nodes/nodeTypes';
 import {
   Connection,
   Edge,
@@ -109,16 +108,6 @@ const useDnDStore = create<RFState>()(
     {
       name: LOCAL_HISTORY_KEY,
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => {
-        const maskedNodeData = state.nodes.map((n) => {
-          if (n.type === XForceNodesEnum.LLM_OPENAI) {
-            return { ...n, data: { ...n.data, apiKey: '' } };
-          }
-          return n;
-        });
-        state.nodes = maskedNodeData;
-        return state;
-      },
     },
   ),
 );

@@ -1,4 +1,5 @@
 import { GETTING_STARTED_GUIDE_URL } from '@/commons/constants';
+import useMountedState from '@/hooks/useMountedState';
 import useDnDStore from '@/stores/useDnDStore';
 import Image from 'next/image';
 import React from 'react';
@@ -17,12 +18,8 @@ const Button: React.FC<ButtonProps> = (props) => {
 };
 const EmptyWorkstation = () => {
   const { nodes } = useDnDStore();
+  const isMounted = useMountedState();
   const [panelVisible, setPanelVisible] = React.useState(true);
-  const [domLoaded, setDomLoaded] = React.useState(false);
-
-  React.useEffect(() => {
-    setDomLoaded(true);
-  }, []);
 
   const onNodeDragOver: React.DragEventHandler<HTMLDivElement> = React.useCallback(
     (event: React.DragEvent<HTMLDivElement>) => {
@@ -37,8 +34,8 @@ const EmptyWorkstation = () => {
     window.open(GETTING_STARTED_GUIDE_URL, '_blank');
   };
 
-  if (!panelVisible || !domLoaded) return <></>;
-  if (domLoaded && nodes.length) return <></>;
+  if (!panelVisible || !isMounted()) return <></>;
+  if (isMounted() && nodes.length) return <></>;
   return (
     <div
       className="flex w-[calc(100vw-320px)] justify-center items-center top-0 mt-11 h-[calc(100vh-44px)] absolute px-12 xl:px-64 z-10"
@@ -71,9 +68,6 @@ const EmptyWorkstation = () => {
               enterprise-support@x-force.ai
             </a>
             .
-            {/* {'\n\n'}
-            Learn more about X-Force at <span className="text-blue-500 cursor-pointer underline">x-force.ai/about</span>
-            ! */}
           </p>
         </div>
         <div className="flex flex-col pt-12 opacity-75">
